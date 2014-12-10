@@ -1,0 +1,34 @@
+Project Asset Structure:
+
+_DynamicAssets			- Stores all assets that are loaded into the game dynamically (at run-time)
+	- Common			- General Runtime Assets
+		- Resources			- General Resources
+_StaticAssets			- Stores all assets that are loaded at game or scene creation (placed through Unity Editor)
+	- _Scenes
+	- Animations			- Stores Mecanim animation files
+	- Animators			- Stores Mecanim animation files
+	- Effects			- Stores all particle effect files
+	- Models
+		- Characters
+		- Environment
+	- Prefabs
+	- Sounds
+		- Music
+		- SFX
+	- Textures
+Editor				- Stores any Editor customizations
+	- UnityVs			- Connector to Visual Studio for C# Scripts
+Extensions			- Stores Third Party extensions
+	- Currently Empty
+Fonts				- Stores any custom Fonts used in the UI
+	- Currently Empty
+Plugins 			- Stores any plugins used for native extensions
+	- Currently Empty
+Resources			- Stores Generic resources
+	- Localization			- Stores Localization files
+Scripts				- Contains all C#, JS files and systems
+	- Currently Empty
+Shaders				- Contains any custom shaders
+	- Currently Empty
+
+
