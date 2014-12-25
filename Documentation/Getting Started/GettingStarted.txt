@@ -1,0 +1,17 @@
+Development Applications:
+
+    Graphics Engine and Editor:
+        Unity 3D (4.6): http://unity3d.com/ (Free)
+
+    Modeling and Animation:
+        Blender: http://blender.org/ (Free)
+
+    3D Texturing Software:
+        Substance Designer/Painter: http://www.allegorithmic.com/ (Paid)
+        Photoshop: http://www.adobe.com/products/photoshop.html (Paid)
+
+    UI and 2D Asset Design:
+        Photoshop: http://www.adobe.com/products/photoshop.html (Paid)
+
+    Sound Design:
+        Audacity: http://audacity.sourceforge.net/ (Free)
