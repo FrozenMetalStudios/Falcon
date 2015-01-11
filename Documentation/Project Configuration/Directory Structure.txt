@@ -16,6 +16,9 @@ _StaticAssets			- Stores all assets that are loaded at game or scene creation (p
 		- Music
 		- SFX
 	- Textures
+
+Standard Assets 		- Store assets that are to be compiled first. This is usually Unity generated asset files.
+
 Editor				- Stores any Editor customizations
 	- UnityVs			- Connector to Visual Studio for C# Scripts
 Extensions			- Stores Third Party extensions
