@@ -5,17 +5,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{928C1593-6802-452A-CDDC-5533A92F08F8}</ProjectGuid>
+    <ProjectGuid>{7CB6A550-7BC7-3240-C0B8-53B4213EFFCA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace></RootNamespace>
-    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
-    <UnityProjectType>GamePlugins:3</UnityProjectType>
+    <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>4.6.1f1</UnityVersion>
   </PropertyGroup>
@@ -54,7 +54,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Standard Assets\Water (Basic)\Sources\Scripts\WaterSimple.cs" />
+    <ProjectReference Include="UnityVS.Project.CSharp.Plugins.csproj">
+      <Project>{928C1593-6802-452A-CDDC-5533A92F08F8}</Project>
+      <Name>UnityVS.Project.CSharp.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Scripts\Character Controller\CharacterController.cs" />
+    <Compile Include="Assets\Scripts\Character Controller\Movement\BasicLRUPMovement.cs" />
+    <Compile Include="Assets\Scripts\Perspective Controller\Perspectives\HackAndSlashCamera.cs" />
+    <Compile Include="Assets\Scripts\Utility\MathUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Supporting\Readme.txt" />
