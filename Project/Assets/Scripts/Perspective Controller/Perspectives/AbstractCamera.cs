@@ -1,3 +1,23 @@
+/*******************************************************************
+ * 
+ * Copyright (C) 2015 Frozen Metal Studios - All Rights Reserved
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Frozen Metal Studios. The intellectual and 
+ * technical concepts contained herein are proprietary to 
+ * Frozen Metal Studios are protected by copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Frozen Metal Studios.
+ * 
+ * *****************************************************************
+ * 
+ * Filename: AbstractCamera.cs
+ * 
+ * Description: Implements the basic requirements for a stand-alone 
+ *  Camera behaviour.
+ * 
+ *******************************************************************/
 using UnityEngine;
 using System.Collections;
 
@@ -5,6 +25,9 @@ namespace FrozenMetal
 {
 namespace Perspective
 {
+    /// <summary>
+    /// Default Behavior and Requirements for a Camera.
+    /// </summary>
     public abstract class AbstractCamera : MonoBehaviour
     {
         /// <summary>
@@ -15,7 +38,7 @@ namespace Perspective
         /// <summary>
         /// Ensure the Look-at occurs smoothly.
         /// </summary>
-        public bool smoothLookAt = true;
+        public bool smoothLookAtEnable = false;
 
         /// <summary>
         /// The damping factor of the Look-at movement.
@@ -37,6 +60,14 @@ namespace Perspective
         public Transform GetTarget()
         {
             return target;
+        }
+
+        /// <summary>
+        /// Sets the Initial State of the Camera.
+        /// </summary>
+        public virtual void InitCamera()
+        {
+            // Perform any Initialization steps required.
         }
 
         /// <summary>
@@ -62,9 +93,10 @@ namespace Perspective
         /// <summary>
         /// Updates the Cameras Lookat every Frame if required.
         /// </summary>
-        public virtual void UpateLookAt()
+        public virtual void UpdateLookAt()
         {
-            if (smoothLookAt)
+            // If enabled, smooth the operation
+            if (smoothLookAtEnable)
             {
                 // Look at and dampen the rotation
                 Quaternion rotation = Quaternion.LookRotation(target.position - transform.position);

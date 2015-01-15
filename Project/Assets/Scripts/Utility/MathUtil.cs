@@ -1,4 +1,23 @@
-﻿using UnityEngine;
+﻿/*******************************************************************
+ * 
+ * Copyright (C) 2015 Frozen Metal Studios - All Rights Reserved
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Frozen Metal Studios. The intellectual and 
+ * technical concepts contained herein are proprietary to 
+ * Frozen Metal Studios are protected by copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Frozen Metal Studios.
+ * 
+ * *****************************************************************
+ * 
+ * Filename: MathUtil.cs
+ * 
+ * Description: A Support Library for Math-related methods.
+ * 
+ *******************************************************************/
+using UnityEngine;
 using System;
 using System.Collections;
 
@@ -20,11 +39,13 @@ namespace MathUtil
         /// <summary>
         /// Angle in Radians on X-Z Plane to Point from +X Axis
         /// </summary>
+        [Range(0, 2*Mathf.PI)]
         public float xzAngle;
 
         /// <summary>
         /// Angle in Radians from +Y Axis to Point
         /// </summary>
+        [Range(0, Mathf.PI)]
         public float yAngle;
 
         /// <summary>
@@ -46,7 +67,7 @@ namespace MathUtil
         /// <param name="polar">Angle to Point on X-Z Plane from +X Axis</param>
         /// <param name="elevation">Angle from +Y Axis to Point</param>
         /// <param name="inDegrees">Default is False, meaning the constructor takes Radian values.
-        ///                         True if providing angles in degrees.</param>
+        ///                         True if providing angles in Degrees.</param>
         public SphericalCoord(float r, float polar, float elevation, bool inDegrees = false)
         {
             // Store the values in the Object
