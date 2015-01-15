@@ -4,28 +4,15 @@ using FrozenMetal.MathUtil;
 
 namespace FrozenMetal
 {
-namespace Camera
+namespace Perspective
 {
     /// <summary>
     /// Provides the Perpective Topdown Camera behavior.
     /// </summary>
-    public class HackAndSlashCamera : MonoBehaviour
+    [AddComponentMenu("Perspectives/Hack And Slash Camera")]
+    [RequireComponent(typeof(Camera))]
+    public class HackAndSlashCamera : AbstractCamera
     {
-        /// <summary>
-        /// The position that that camera will be following.
-        /// </summary>
-        public Transform target;
-
-        /// <summary>
-        /// The speed with which the camera will be following.
-        /// </summary>
-        public float smoothing = 5f;
-
-        /// <summary>
-        /// The damping factor of the Look-at movement.
-        /// </summary>
-        public float smoothLookAtDamping = 6.0f;
-
         /// <summary>
         /// Specifies the Placement of the Camera relative to the
         /// Target in Spherical terms.
@@ -33,12 +20,17 @@ namespace Camera
         public SphericalCoord cameraOffset;
 
         /// <summary>
+        /// The speed with which the camera will be following.
+        /// </summary>
+        public float smoothing = 5f;
+
+        /// <summary>
         /// Specifies the Look-at offset from the Target.
         /// </summary>
         public Vector3 viewOffset = new Vector3(0, 0, 0);
 
         /// <summary>
-        /// Specifies the Look-at rotational Offset.
+        /// Specifies the Look-at rotational Offset, in Degrees.
         /// </summary>
         public Quaternion rotationOffset = Quaternion.Euler(0, 0, 0);
 
@@ -52,23 +44,6 @@ namespace Camera
         /// Camera focus point.
         /// </summary>
         private Vector3 lookAtPosition;
-
-        /// <summary>
-        /// Sets the target runtime.
-        /// </summary>
-        public virtual void SetTarget(Transform transform)
-        {
-            this.target = transform;
-        }
-
-        /// <summary>
-        /// Get the Target at Runtime.
-        /// </summary>
-        /// <returns>The Cameras Target Transform</returns>
-        public Transform GetTarget()
-        {
-            return target;
-        }
 
         /// <summary>
         /// When the Scene starts, set the camera to the
@@ -87,9 +62,9 @@ namespace Camera
         }
 
         /// <summary>
-        /// Every Frame, update the position of the Camera smoothly.
+        /// Ensures the Cameras position is updated every Frame if required.
         /// </summary>
-        void LateUpdate()
+        public override void UpdatePosition()
         {
             // Create a postion the Camera is heading toward for based on the offset from the target.
             Vector3 targetCamPos = target.position + placementOffset;
@@ -99,7 +74,13 @@ namespace Camera
 
             // Smoothly interpolate between the Camera's current position and it's target position.
             transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+        }
 
+        /// <summary>
+        /// Updates the Cameras Lookat every Frame if required.
+        /// </summary>
+        public override void UpateLookAt()
+        {
             // Look at and dampen the rotation
             Quaternion rotation = Quaternion.LookRotation(lookAtPosition - transform.position) * rotationOffset;
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * smoothLookAtDamping);
