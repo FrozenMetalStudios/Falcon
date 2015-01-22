@@ -21,9 +21,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace FrozenMetal
-{
-namespace Perspective
+namespace Assets.Scripts.Perspective.Cameras
 {
     /// <summary>
     /// Default Behavior and Requirements for a Camera.
@@ -59,7 +57,7 @@ namespace Perspective
         /// <returns>The Cameras Target Transform</returns>
         public Transform GetTarget()
         {
-            return target;
+            return this.target;
         }
 
         /// <summary>
@@ -100,14 +98,13 @@ namespace Perspective
             {
                 // Look at and dampen the rotation
                 Quaternion rotation = Quaternion.LookRotation(target.position - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * smoothLookAtDamping);
+                this.transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * smoothLookAtDamping);
             }
             else
             {
                 // Set the Cameras Rotation for the Look-at Point
-                transform.rotation = Quaternion.LookRotation(target.position - transform.position);
+                this.transform.rotation = Quaternion.LookRotation(target.position - transform.position);
             }
         }
     }
-}
 }
