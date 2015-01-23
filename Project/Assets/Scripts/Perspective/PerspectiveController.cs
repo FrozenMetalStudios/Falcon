@@ -19,10 +19,10 @@
  *******************************************************************/
 using UnityEngine;
 using System.Collections;
+using Assets.Scripts.CustomEditor;
+using Assets.Scripts.Perspective.Cameras;
 
-namespace FrozenMetal
-{
-namespace Perspective
+namespace Assets.Scripts.Perspective
 {
     /// <summary>
     /// Manages the Main Camera, allowing the behavior to be switched.
@@ -51,7 +51,26 @@ namespace Perspective
         /// If the value is -1, it means no Last Camera
         /// is specified.
         /// </summary>
-        public int lastCamera = -1;
+        [ReadOnly]
+        private int lastCamera = -1;
+
+        /// <summary>
+        /// Specifies if the Camera failed to complete a transition.
+        /// True if a mid-transition event occured, false otherwise.
+        /// </summary>
+        private bool midTransitionFlag = false;
+
+        /// <summary>
+        /// If the Camera failed to complete a transition, stores
+        /// the position of the failure.
+        /// </summary>
+        private Vector3 midTransitionPosition;
+
+        /// <summary>
+        /// If the Camera failed to complete a transition, stores
+        /// the rotation of the failure.
+        /// </summary>
+        private Quaternion midTransitionRotation;
 
         /// <summary>
         /// The progress of the current Interpolation in time.
@@ -59,21 +78,18 @@ namespace Perspective
         private float interpolationTime = 0;
 
         /// <summary>
-        /// The maximum allowed time spent in a Camera transition.
+        /// The speed of the active transition.
         /// </summary>
-        private float maxInterpolationTime = 0;
-
-        /// <summary>
-        /// The inverse of the maximum transition time.
-        /// </summary>
-        private float maxInterpolationTimeInv = 0;
+        private float transitionSpeed = 0;
 
         /// <summary>
         /// The reported value of the Animation Curve.
         /// </summary>
         private float lastInterpol;
 
-        // An ease in, ease out animation curve (tangents are all flat)
+        /// <summary>
+        /// An ease in, ease out animation curve (tangents are all flat)
+        /// </summary>
         public AnimationCurve curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
 
         /// <summary>
@@ -99,8 +115,8 @@ namespace Perspective
         /// Sets the Camera to use and sets a maximum transition time.
         /// </summary>
         /// <param name="newCamera">The Index of the new Camera</param>
-        /// <param name="time">The maximum Transition Time in Seconds</param>
-        public void SetCamera(int newCamera, float time)
+        /// <param name="speed">Specifies the speed of the transition</param>
+        public void SetCamera(int newCamera, float speed)
         {
             // Cannot change camera to self
             if (newCamera == currentCamera)
@@ -110,12 +126,25 @@ namespace Perspective
 
             // If the last Camera was free, set the new Camera to the
             // current one and start transitioning.
-            if ((time > 0) && (lastCamera == -1))
+            if ((speed > 0) && (lastCamera == -1))
             {
                 // Define the transition properties
-                maxInterpolationTimeInv = 1/time;
                 interpolationTime = 0;
-                maxInterpolationTime = time;
+                transitionSpeed = speed;
+
+                // Set the Last Camera to the Current Camera
+                lastCamera = currentCamera;
+            }
+            else if (speed > 0)
+            {
+                // Set the Mid-Transition Flag
+                midTransitionFlag = true;
+
+                // Reset the transition properties
+                interpolationTime = 0;
+                transitionSpeed = speed;
+                midTransitionPosition = transform.position;
+                midTransitionRotation = transform.rotation;
 
                 // Set the Last Camera to the Current Camera
                 lastCamera = currentCamera;
@@ -175,8 +204,8 @@ namespace Perspective
             cameras[currentCamera].InitCamera();
 
             // Get the initial Position and Rotation if the current Camera
-            transform.position = cameras[currentCamera].transform.position;
-            transform.rotation = cameras[currentCamera].transform.rotation;
+            this.transform.position = cameras[currentCamera].transform.position;
+            this.transform.rotation = cameras[currentCamera].transform.rotation;
         }
 
         /// <summary>
@@ -205,25 +234,68 @@ namespace Perspective
                 // Update our interpolation time
                 interpolationTime += Time.deltaTime;
 
-                // Update the last camera
-                cameras[lastCamera].UpdatePosition();
+                // If in mid-transition, move from current position to new
+                if (midTransitionFlag)
+                {
+                    // Use the Animation Curve to determine the progress of the Camera
+                    float totalDistance = Vector3.Distance(midTransitionPosition,
+                                                           cameras[currentCamera].transform.position);
 
-                // Use the Animation Curve to determine where the camera should be
-                lastInterpol = curve.Evaluate(interpolationTime * maxInterpolationTimeInv);
-                transform.position = Vector3.Lerp(cameras[lastCamera].transform.position,
-                                                  cameras[currentCamera].transform.position,
-                                                  lastInterpol);
+                    // Ensure no division by zero, fixes jump on boundary when cameras are very similar.
+                    if (totalDistance == 0)
+                    {
+                        lastCamera = -1;
+                        this.transform.position = cameras[currentCamera].transform.position;
+                        midTransitionFlag = false;
+                        return;
+                    }
+
+                    // Determine Progress
+                    lastInterpol = curve.Evaluate(interpolationTime * transitionSpeed / totalDistance);
+
+                    // Update the position from the PerspectiveControllers current
+                    this.transform.position = Vector3.Lerp(midTransitionPosition,
+                                                           cameras[currentCamera].transform.position,
+                                                           lastInterpol);
+                }
+                else
+                {
+                    // Update the last camera
+                    cameras[lastCamera].UpdatePosition();
+
+                    // Use the Animation Curve to determine the progress of the Camera
+                    float totalDistance = Vector3.Distance(cameras[lastCamera].transform.position,
+                                                           cameras[currentCamera].transform.position);
+
+                    // Ensure no division by zero, fixes jump on boundary when cameras are very similar.
+                    if (totalDistance == 0)
+                    {
+                        this.transform.position = cameras[currentCamera].transform.position;
+                        lastCamera = -1;
+                        midTransitionFlag = false;
+                        return;
+                    }
+
+                    // Determine Progress
+                    lastInterpol = curve.Evaluate(interpolationTime * transitionSpeed / totalDistance);
+
+                    // Update the position from the last cameras position
+                    this.transform.position = Vector3.Lerp(cameras[lastCamera].transform.position,
+                                                           cameras[currentCamera].transform.position,
+                                                           lastInterpol);
+                }
 
                 // If we have completed our Interpolation, disable the last camera Index
-                if (interpolationTime > maxInterpolationTime)
+                if (lastInterpol >= 1)
                 {
                     lastCamera = -1;
+                    midTransitionFlag = false;
                 }
             }
             else
             {
                 // Set the Camera Manager to the current position
-                transform.position = cameras[currentCamera].transform.position;
+                this.transform.position = cameras[currentCamera].transform.position;
             }
         }
 
@@ -236,24 +308,37 @@ namespace Perspective
             // If the last camera isn't NULL, transition the Look-at Smoothly.
             if (lastCamera != -1)
             {
-                // Update both Cameras Look-at
-                cameras[lastCamera].UpdateLookAt();
+                // Update the current Camera's lookat
                 cameras[currentCamera].UpdateLookAt();
 
-                // Gather both Rotational states
-                Quaternion from = cameras[lastCamera].transform.rotation;
-                Quaternion to = cameras[currentCamera].transform.rotation;
+                // Allocate 2 Rotation Variables
+                Quaternion from, to;
+
+                // Process Mid-transition look-at
+                if (midTransitionFlag)
+                {
+                    // We are transitioning from the Controllers Rotation at start of mid-transition
+                    from = midTransitionRotation;
+                }
+                else
+                {
+                    // Update last Cameras Look-at
+                    cameras[lastCamera].UpdateLookAt();
+
+                    // Gather last Cameras rotation
+                    from = cameras[lastCamera].transform.rotation;
+                }
 
                 // Smoothly transition to the new State
-                transform.rotation = Quaternion.Slerp(from, to, lastInterpol);
+                to = cameras[currentCamera].transform.rotation;
+                this.transform.rotation = Quaternion.Slerp(from, to, lastInterpol);
             }
             else
             {
                 // There was no Last Camera, so just Update the current Camera and copy the rotation
                 cameras[currentCamera].UpdateLookAt();
-                transform.rotation = cameras[currentCamera].transform.rotation;
+                this.transform.rotation = cameras[currentCamera].transform.rotation;
             }
         }
     }
-}
 }

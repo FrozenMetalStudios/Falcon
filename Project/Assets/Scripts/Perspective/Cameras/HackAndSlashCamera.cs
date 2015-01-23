@@ -23,11 +23,9 @@
  *******************************************************************/
 using UnityEngine;
 using System.Collections;
-using FrozenMetal.MathUtil;
+using Assets.Scripts.Utility;
 
-namespace FrozenMetal
-{
-namespace Perspective
+namespace Assets.Scripts.Perspective.Cameras
 {
     /// <summary>
     /// Provides the Perpective Topdown Camera behavior.
@@ -40,7 +38,7 @@ namespace Perspective
         /// Specifies the Placement of the Camera relative to the
         /// Target in Spherical terms.
         /// </summary>
-        public SphericalCoord cameraOffset;
+        public FmsMath.SphericalCoord cameraOffset;
 
         /// <summary>
         /// Smooths the Camera movement as it follows the player.
@@ -77,13 +75,13 @@ namespace Perspective
             this.InitCamera();
 
             // Set the Cameras Initial Position
-            transform.position = target.position + placementOffset;
+            this.transform.position = target.position + placementOffset;
 
             // Calculate the Look-at offset from the target.
             Vector3 lookAtPosition = target.position + viewOffset;
 
             // Set the Cameras Rotation for the Look-at Point
-            transform.rotation = Quaternion.LookRotation(lookAtPosition - transform.position) * Quaternion.Euler(rotationOffset);
+            this.transform.rotation = Quaternion.LookRotation(lookAtPosition - transform.position) * Quaternion.Euler(rotationOffset);
         }
 
         /// <summary>
@@ -93,6 +91,9 @@ namespace Perspective
         {
             // Calculate the initial offset.
             placementOffset = cameraOffset.ToCartesian();
+
+            // Set the Cameras Initial Position
+            this.transform.position = target.position + placementOffset;
         }
 
         /// <summary>
@@ -107,15 +108,15 @@ namespace Perspective
             Vector3 targetCamPos = target.position + placementOffset;
 
             // If smoothing is not enabled, just jump to the new position.
-            if (smoothMovementEnable)
+            if (smoothMovementEnable && (targetCamPos != this.transform.position))
             {
                 // Smoothly interpolate between the Camera's current position and it's target position.
-                transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothMovementDamping * Time.deltaTime);
+                this.transform.position = Vector3.Lerp(this.transform.position, targetCamPos, smoothMovementDamping * Time.deltaTime);
             }
             else
             {
                 // Jump positions
-                transform.position = targetCamPos;
+                this.transform.position = targetCamPos;
             }
         }
 
@@ -137,9 +138,8 @@ namespace Perspective
             else
             {
                 // Set the Cameras Rotation for the Look-at Point
-                transform.rotation = Quaternion.LookRotation(target.position - transform.position);
+                transform.rotation = Quaternion.LookRotation(target.position - transform.position) * Quaternion.Euler(rotationOffset);
             }
         }
     }
-}
 }

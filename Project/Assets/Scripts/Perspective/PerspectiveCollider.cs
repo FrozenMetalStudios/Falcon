@@ -16,18 +16,14 @@
  * 
  * Description: Supports the changing of the Main Camera upon Target
  *  collision. 
- *  
- * NOTE: COLLISION IS NOT WORKING AS EXPECTED. WATCH COLLIDER TUTORIAL
- *  AND CORRECT.
  * 
  *******************************************************************/
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Perspective.Cameras;
 
-namespace FrozenMetal
-{
-namespace Perspective
+namespace Assets.Scripts.Perspective
 {
     /// <summary>
     /// Responsible for triggering a Camera change upon Camera Collision.
@@ -50,7 +46,7 @@ namespace Perspective
         /// <summary>
         /// The transition time in Seconds to use upon collision.
         /// </summary>
-        public float interpolationTime = 1;
+        public float transitionSpeed = 3.0f;
 
         /// <summary>
         /// Store the old Cameras index so the process can be reverted.
@@ -80,10 +76,8 @@ namespace Perspective
             {
                 int oldCamera = perspectiveController.currentCamera;
                 cameraStack.Add(oldCamera);
-                perspectiveController.SetCamera(newCamera, interpolationTime);
-                Debug.Log("Collision with PerspectiveController Detected and Correct");
+                perspectiveController.SetCamera(newCamera, transitionSpeed);
             }
-            Debug.Log("Collision detected but not correct");
         }
 
         /// <summary>
@@ -99,7 +93,7 @@ namespace Perspective
                 if (perspectiveController.currentCamera == newCamera)
                 {
                     // Return the old camera
-                    perspectiveController.SetCamera(cameraStack[cameraStack.Count - 1], interpolationTime);
+                    perspectiveController.SetCamera(cameraStack[cameraStack.Count - 1], transitionSpeed);
                     cameraStack.RemoveAt(cameraStack.Count-1);
                 }
                 else
@@ -117,5 +111,4 @@ namespace Perspective
             }
         }
     }
-}
 }
