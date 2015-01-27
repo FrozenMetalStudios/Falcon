@@ -9,7 +9,7 @@ Main Contributors:
 Dan Apperloo		-	danapperloo@gmail.com
 Pravjot Rai		-	pravjot.s.rai@gmail.com
 HeeChul 'Andy' Kim	-	ahck93@gmail.com
-Justyn Houle - justyn.houle@gmail.com
+Justyn Houle    - justyn.houle@gmail.com
 <Placeholder for Dans Brother> - <Dans Brothers Email>
 
 
