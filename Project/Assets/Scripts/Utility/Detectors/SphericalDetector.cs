@@ -12,39 +12,42 @@
  * 
  * *****************************************************************
  * 
- * Filename: PhysicsTimer.cs
+ * Filename: SphericalDetector.cs
  * 
- * Description: Implements a Timer that updates in the Physics layer.
+ * Description: 
  * 
  *******************************************************************/
 using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts.Utility.Timers
+namespace Assets.Scripts.Utility.Detectors
 {
     /// <summary>
-    /// A Timer that updates using the Physics interval time.
+    /// 
     /// </summary>
-    public class PhysicsTimer : AbstractTimer
+    public static class SphericalDetector
     {
         /// <summary>
-        /// Constructor sets the Timeout.
+        /// 
         /// </summary>
-        /// <param name="seconds">The timeout in seconds</param>
-        public PhysicsTimer(float seconds) : base(seconds)
+        /// <param name="reference"></param>
+        /// <param name="target"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public static bool InGeometry(Vector3 reference, Vector3 target, float radius)
         {
-        }
+            // Find the Distance from base point to the input
+            float distance = Vector3.Distance(reference, target);
 
-        /// <summary>
-        /// Updates the Timer's internal count.
-        /// This is performed using the FixedUpdate time.
-        /// Must be called in the Objects FixedUpdate.
-        /// </summary>
-        protected override void InternalUpdate()
-        {
-            // Update the internal count with the time
-            // from the last physics update.
-            internalCount += Time.fixedDeltaTime;
+            // If the distance from our center to the 
+            if (distance <= radius)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

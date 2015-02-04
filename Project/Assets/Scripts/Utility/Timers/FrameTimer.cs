@@ -26,7 +26,7 @@ namespace Assets.Scripts.Utility.Timers
     /// <summary>
     /// A timer that updates using the Frame interval time.
     /// </summary>
-    class FrameTimer : AbstractTimer
+    public class FrameTimer : AbstractTimer
     {
         /// <summary>
         /// Constructor sets the Timeout.

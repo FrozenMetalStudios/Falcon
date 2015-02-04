@@ -26,7 +26,7 @@ namespace Assets.Scripts.Utility.Timers
     /// Used for Loose timeout on Objects who update 
     /// irregularly. 
     /// </summary>
-    class UnreliableTimer : AbstractTimer
+    public class UnreliableTimer : AbstractTimer
     {
         /// <summary>
         /// Determines if the Timer is running or stalled.
