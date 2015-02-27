@@ -34,27 +34,25 @@ namespace Assets.Scripts.Player.Movement
         public float speed = 6f;
 
         /// <summary>
+        /// The maximum amount the players velocity can change in
+        /// a single physics frame.
+        /// </summary>
+        public float maxSpeedChange = 3f;
+
+        /// <summary>
         /// Flags if movement is occuring.
         /// </summary>
         [ReadOnly]
-        public bool moving = false;
-
-        /// <summary>
-        /// Flag if rotation is occuring.
-        /// </summary>
-        [ReadOnly]
-        public bool rotating = false;
+        public MovementState movementState;
 
         /// <summary>
         /// Reference to the animator component.
         /// </summary>
-        // [ReadOnly]
         // public Animator anim;
 
         /// <summary>
         /// Reference to the player's rigidbody.
         /// </summary>
-        [ReadOnly]
         public Rigidbody playerRigidbody;
 
         /// <summary>
@@ -62,15 +60,12 @@ namespace Assets.Scripts.Player.Movement
         /// </summary>
         public virtual void InitMovement()
         {
-            // At base, gather the Component References
-            //anim = GetComponent<Animator>();
-            playerRigidbody = GetComponent<Rigidbody>();
         }
 
         /// <summary>
         /// Player Movement must be performed in Fixed Update.
         /// </summary>
-        public abstract void FixedUpdate();
+        public abstract void Move();
 
         /// <summary>
         /// The movement must update its state.

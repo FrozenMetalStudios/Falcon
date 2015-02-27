@@ -36,24 +36,26 @@ namespace Assets.Scripts.Player.Movement
         private Vector3 travelSource; 
 
         /// <summary>
-        /// The vector to store the direction of the player's movement.
-        /// </summary>
-        private Vector3 travelDirection;
-
-        /// <summary>
-        /// The distance that will be travelled by the movement.
-        /// </summary>
-        private float travelDistance;
-
-        /// <summary>
         /// The destination coordinates.
         /// </summary>
         private Vector3 travelDestination;
 
         /// <summary>
-        /// The progress of the current Interpolation in time.
+        /// The vector to store the direction of the player's movement,
+        /// in the X - Z plane..
         /// </summary>
-        private float interpolationTime = 0;
+        private Vector3 travelDirection;
+
+        /// <summary>
+        /// The distance that will be traveled by the movement, 
+        /// in the X - Z plane.
+        /// </summary>
+        private float xzTotalDistance;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private float xzDistanceTraveled = 0;
 
         /// <summary>
         /// A layer mask so that a ray can be cast just at gameobjects on the floor layer.
@@ -108,16 +110,16 @@ namespace Assets.Scripts.Player.Movement
         /// <summary>
         /// In the Physics Update, look for Input and update the Player position.
         /// </summary>
-        public override void FixedUpdate()
+        public override void Move()
         {
             // Set new Target
             DetermineState();
 
-            // Move the player around the scene.
-            UpdatePosition();
-
             // Rotate the player
             UpdateRotation();
+
+            // Move the player around the scene.
+            UpdatePosition();
 
             // Animate the player.
             // UpdateAnimation();
@@ -147,23 +149,26 @@ namespace Assets.Scripts.Player.Movement
                     // Store the Destination Vector
                     travelDestination = floorHit.point;
 
-                    // Store the Direction Vector
-                    travelDestination.y = 0.5f; // Currently Force to 0
-                    Vector3 playerToMouse = travelDestination - transform.position;
-                    travelDirection = playerToMouse.normalized;
-
-                    // Store the Length of the Direction
-                    travelDistance = Vector3.Distance(transform.position, travelDestination);
-
-                    // Restart the Interpolation Time
-                    interpolationTime = 0;
-
                     // Store the Travel start position
                     travelSource = transform.position;
 
+                    // Store the Length of the Travel in the X - Z plane
+                    Vector3 xzTravelDestination = floorHit.point;
+                    Vector3 xzTravelSource = transform.position;
+                    xzTravelDestination.y = 0; // Force the point to the X - Z plane
+                    xzTravelSource.y = 0; // Force the point to the X - Z plane.
+                    xzTotalDistance = Vector3.Distance(xzTravelSource, xzTravelDestination);
+
+                    // Store the Direction Vector, forced in the X - Z plane.
+                    Vector3 playerToMouse = xzTravelDestination - xzTravelSource;
+                    travelDirection = playerToMouse.normalized;
+
+                    // 
+                    xzDistanceTraveled = 0;
+
                     // Change our movement flag
-                    moving = true;
-                    rotating = true;
+                    movementState.SetMovement(MovementState.MovementFlag.Running);
+                    movementState.SetRotation(MovementState.RotationFlag.Turning);
                 }
             }
             // Catch to ensure that drag movement stops in it's tracks
@@ -176,8 +181,8 @@ namespace Assets.Scripts.Player.Movement
                 if (dragMovementFlag)
                 {
                     // Stop the current motion
-                    moving = false;
-                    rotating = false;
+                    movementState.ClearMovement();
+                    movementState.ClearRotation();
                     dragMovementFlag = false;
                 }
             }
@@ -189,25 +194,37 @@ namespace Assets.Scripts.Player.Movement
         public override void UpdatePosition()
         {
             // If we are moving, update our position
-            if (moving)
+            switch (movementState.GetMovement())
             {
-                // Update the interpolation progress
-                interpolationTime += Time.deltaTime;
+                case (ushort) MovementState.MovementFlag.Running:
+                case (ushort) MovementState.MovementFlag.Walking:
+                    // Predict position using only X-Z plane
+                    float predictedDistanceTraveled = xzDistanceTraveled + (Time.deltaTime * speed);
+                    float predictedDistanceFrac = predictedDistanceTraveled / xzTotalDistance;
+                    Vector3 predictedXZLocation = Vector3.Lerp(travelSource, travelDestination, fracDistance)
+                    // Check destination height and compare to current height
+                    // to determine speed co-efficient
 
-                // Determine the distance traveled so far on this path
-                float traveled = interpolationTime * speed;
+                    // Calculate new position on X-Z plane using speed co-efficient
+                    // if the speed co-efficient is less than a given cutoff value
 
-                // Determine the fraction for the Interpolation
-                float fracDistance = traveled / travelDistance;
+                    // Determine the height of the new location
 
-                // Set the updated position
-                playerRigidbody.MovePosition(Vector3.Lerp(travelSource, travelDestination, fracDistance));
+                    // Set the final position
+                   
 
-                // If we've reached our destination, clear some variables and change the flag
-                if (fracDistance >= 1)
-                {
-                    moving = false;
-                }
+                    // Set the updated position
+                    playerRigidbody.MovePosition();
+
+                    // If we've reached our destination, clear some variables and change the flag
+                    if (fracDistance >= 1)
+                    {
+                        movementState.ClearMovement();
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -217,7 +234,7 @@ namespace Assets.Scripts.Player.Movement
         public override void UpdateRotation()
         {
             // If we are rotating, update the rotation
-            if (rotating)
+            if (movementState.GetRotation() != 0)
             {
                 // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
                 Quaternion newRotatation = Quaternion.LookRotation(travelDirection);
@@ -226,7 +243,7 @@ namespace Assets.Scripts.Player.Movement
                 playerRigidbody.MoveRotation(newRotatation);
 
                 // Disable any rotation
-                rotating = false;
+                movementState.ClearRotation();
             }
         }
 
@@ -236,5 +253,7 @@ namespace Assets.Scripts.Player.Movement
         public override void UpdateAnimation()
         {
         }
+
+        private 
     }
 }
