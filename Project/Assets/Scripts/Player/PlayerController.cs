@@ -22,33 +22,39 @@ using Assets.Scripts.Player.Movement;
 
 namespace Assets.Scripts.Player
 {
+    [RequireComponent (typeof (Rigidbody))]
+    [RequireComponent (typeof (CapsuleCollider))]
     public class PlayerController : MonoBehaviour
     {
+        /// <summary>
+        /// Reference to the animator component.
+        /// </summary>
+        // public Animator anim;
+
+        /// <summary>
+        /// Reference to the player's rigidbody.
+        /// </summary>
+        public Rigidbody playerRigidbody;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public AbstractMovement movement;
 
-        /*
-        void Start()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void Awake()
         {
-            // Call the Spawn function after a delay of the spawnTime and then continue to call after the same amount of time.
-            InvokeRepeating("Spawn", spawnTime, spawnTime);
+            
         }
 
 
-        void Spawn()
+        void FixedUpdate()
         {
-            // If the player has no health left...
-            //if(playerHealth.currentHealth <= 0f)
-            //{
-            //    // ... exit the function.
-            //    return;
-            //}
-
-            // Find a random index between zero and one less than the number of spawn points.
-            int spawnPointIndex = Random.Range(0, spawnPoints.Length);
-
-            // Create an instance of the enemy prefab at the randomly selected spawn point's position and rotation.
-            Instantiate(enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
+            // Perform the player movement
+            movement.Move();
         }
-        */
     }
 }
