@@ -39,6 +39,11 @@ namespace Assets.Scripts.Player
         /// <summary>
         /// 
         /// </summary>
+        public CapsuleCollider playerCollider;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public AbstractMovement movement;
 
 
@@ -47,7 +52,11 @@ namespace Assets.Scripts.Player
         /// </summary>
         void Awake()
         {
-            
+            // Ensure Rigidbody Characteristics
+            playerRigidbody.mass = 50;
+            playerRigidbody.drag = 0;
+            playerRigidbody.angularDrag = 0;
+            playerRigidbody.useGravity = false;
         }
 
 

@@ -34,12 +34,6 @@ namespace Assets.Scripts.Player.Movement
         public float speed = 6f;
 
         /// <summary>
-        /// The maximum amount the players velocity can change in
-        /// a single physics frame.
-        /// </summary>
-        public float maxSpeedChange = 3f;
-
-        /// <summary>
         /// Flags if movement is occuring.
         /// </summary>
         [ReadOnly]
@@ -60,6 +54,8 @@ namespace Assets.Scripts.Player.Movement
         /// </summary>
         public virtual void InitMovement()
         {
+            movementState = new MovementState();
+            playerRigidbody = GetComponent<Rigidbody>();
         }
 
         /// <summary>

@@ -167,5 +167,58 @@ namespace Assets.Scripts.Utility
                 return new Vector3(x, y, z);
             }
         }
+
+        public static class VectorMath
+        {
+            public enum Axis : int {X, Y, Z};
+
+            public static float DistanceAlongPlane(Vector3 initialPoint, Vector3 finalPoint, Axis staticAxis = Axis.Y)
+            {
+                switch(staticAxis)
+                {
+                    case Axis.X:
+                        initialPoint.x = 0;
+                        finalPoint.x = 0;
+                        break;
+
+                    case Axis.Z:
+                        initialPoint.z = 0;
+                        finalPoint.z = 0;
+                        break;
+
+                    case Axis.Y:
+                    default:
+                        initialPoint.y = 0;
+                        finalPoint.y = 0;
+                        break;
+                }
+
+                return Vector3.Distance(finalPoint, initialPoint);
+            }
+
+            public static Vector3 DirectionAlongPlane(Vector3 initialPoint, Vector3 finalPoint, Axis staticAxis = Axis.Y)
+            {
+                switch (staticAxis)
+                {
+                    case Axis.X:
+                        initialPoint.x = 0;
+                        finalPoint.x = 0;
+                        break;
+
+                    case Axis.Z:
+                        initialPoint.z = 0;
+                        finalPoint.z = 0;
+                        break;
+
+                    case Axis.Y:
+                    default:
+                        initialPoint.y = 0;
+                        finalPoint.y = 0;
+                        break;
+                }
+
+                return (finalPoint - initialPoint).normalized;
+            }
+        }
     }
 }
