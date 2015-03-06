@@ -21,7 +21,12 @@ using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Utility;
 using Assets.Scripts.Utility.Timers;
+using Assets.Scripts.Utility.Detectors;
 using Assets.Scripts.CustomEditor;
+
+// Aliases
+using VectSupp = Assets.Scripts.Utility.FmsMath.VectorMath;
+
 
 namespace Assets.Scripts.Player.Movement
 {
@@ -58,6 +63,11 @@ namespace Assets.Scripts.Player.Movement
         private float xzDistanceTraveled = 0;
 
         /// <summary>
+        /// Last Position before Movement Update in Fixed Update
+        /// </summary>
+        private Vector3 lastPosition;
+
+        /// <summary>
         /// A layer mask so that a ray can be cast just at gameobjects on the floor layer.
         /// </summary>
         private int floorMask;
@@ -73,6 +83,11 @@ namespace Assets.Scripts.Player.Movement
         public float dragDelay = 0.4f;
 
         /// <summary>
+        /// Minimum movement Radius.
+        /// </summary>
+        public float minimumMovementRadius = 0.5f;
+
+        /// <summary>
         /// Ensures that a drag move only begins after a delay.
         /// </summary>
         private PhysicsTimer dragTimer;
@@ -83,16 +98,22 @@ namespace Assets.Scripts.Player.Movement
         [ReadOnly]
         public bool dragMovementFlag = false;
 
+        public CapsuleCollider playerCollider;
+
         /// <summary>
         /// Configure the Movement on Script Load.
         /// </summary>
         void Awake()
         {
+            // Initialize the Internal Components
+            dragTimer = new PhysicsTimer(dragDelay);
+            playerCollider = GetComponent<CapsuleCollider>();
+
             // Initialize the Movement parameters
             InitMovement();
 
-            // Initialize the Drag Timer
-            dragTimer = new PhysicsTimer(dragDelay);
+            // Initialize the players position
+            InitPosition();
         }
 
         /// <summary>
@@ -105,6 +126,15 @@ namespace Assets.Scripts.Player.Movement
 
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void InitPosition()
+        {
+            // Ensure the player stays along the ground
+            ForceToGround();
         }
 
         /// <summary>
@@ -146,29 +176,29 @@ namespace Assets.Scripts.Player.Movement
                 // Perform the raycast and if it hits something on the floor layer...
                 if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
                 {
-                    // Store the Destination Vector
-                    travelDestination = floorHit.point;
+                    // Check to see if the point is within the minimum point distance
+                    if (!SphericalDetector.InGeometry(transform.position, floorHit.point, minimumMovementRadius))
+                    {
+                        // Store the Destination Vector
+                        travelDestination = floorHit.point;
 
-                    // Store the Travel start position
-                    travelSource = transform.position;
+                        // Store the Travel start position
+                        travelSource = transform.position;
 
-                    // Store the Length of the Travel in the X - Z plane
-                    Vector3 xzTravelDestination = floorHit.point;
-                    Vector3 xzTravelSource = transform.position;
-                    xzTravelDestination.y = 0; // Force the point to the X - Z plane
-                    xzTravelSource.y = 0; // Force the point to the X - Z plane.
-                    xzTotalDistance = Vector3.Distance(xzTravelSource, xzTravelDestination);
+                        // Store the Length of the Travel in the X - Z plane
+                        xzTotalDistance = VectSupp.DistanceAlongPlane(travelSource, travelDestination, VectSupp.Axis.Y);
 
-                    // Store the Direction Vector, forced in the X - Z plane.
-                    Vector3 playerToMouse = xzTravelDestination - xzTravelSource;
-                    travelDirection = playerToMouse.normalized;
+                        // Store the Direction Vector, forced in the X - Z plane.
+                        travelDirection = VectSupp.DirectionAlongPlane(travelSource, travelDestination, VectSupp.Axis.Y);
 
-                    // 
-                    xzDistanceTraveled = 0;
+                        // Init distance traveled to 0
+                        xzDistanceTraveled = 0;
+                        lastPosition = travelSource;
 
-                    // Change our movement flag
-                    movementState.SetMovement(MovementState.MovementFlag.Running);
-                    movementState.SetRotation(MovementState.RotationFlag.Turning);
+                        // Change our movement flag
+                        movementState.SetMovement(MovementState.MovementFlag.Running);
+                        movementState.SetRotation(MovementState.RotationFlag.Turning);
+                    }
                 }
             }
             // Catch to ensure that drag movement stops in it's tracks
@@ -198,32 +228,42 @@ namespace Assets.Scripts.Player.Movement
             {
                 case (ushort) MovementState.MovementFlag.Running:
                 case (ushort) MovementState.MovementFlag.Walking:
-                    // Predict position using only X-Z plane
-                    float predictedDistanceTraveled = xzDistanceTraveled + (Time.deltaTime * speed);
-                    float predictedDistanceFrac = predictedDistanceTraveled / xzTotalDistance;
-                    Vector3 predictedXZLocation = Vector3.Lerp(travelSource, travelDestination, fracDistance)
-                    // Check destination height and compare to current height
-                    // to determine speed co-efficient
+                    // Ensure the player stays along the ground
+                    ForceToGround();
 
-                    // Calculate new position on X-Z plane using speed co-efficient
-                    // if the speed co-efficient is less than a given cutoff value
+                    // Determine x-z plane movement from last FixedUpdate
+                    float fracDistance = 0;
+                    float xzJustTraveled = VectSupp.DistanceAlongPlane(lastPosition, 
+                                                                       transform.position,
+                                                                       VectSupp.Axis.Y);
 
-                    // Determine the height of the new location
-
-                    // Set the final position
-                   
-
-                    // Set the updated position
-                    playerRigidbody.MovePosition();
-
-                    // If we've reached our destination, clear some variables and change the flag
+                    // Determine how far we've traveled overall and if we still need to move
+                    xzDistanceTraveled += xzJustTraveled;
+                    fracDistance = xzDistanceTraveled / xzTotalDistance;
                     if (fracDistance >= 1)
                     {
+                        playerRigidbody.velocity =  Vector3.zero;
                         movementState.ClearMovement();
+                        break;
                     }
+
+                    // Predict if the speed needed is less than the players speed
+                    float effectiveTravelSpeed = speed;
+                    float remainingDistance = xzTotalDistance - xzDistanceTraveled;
+                    float expectedTravel = speed * Time.fixedDeltaTime;
+                    if (remainingDistance < expectedTravel)
+                    {
+                        effectiveTravelSpeed = speed / 3;
+                    }
+                    
+                    // Add the forces for the correct movement
+                    playerRigidbody.velocity = effectiveTravelSpeed * travelDirection;
+                    lastPosition = transform.position;
                     break;
 
                 default:
+                    // If we are not moving, stop the object
+                    playerRigidbody.velocity = Vector3.zero;
                     break;
             }
         }
@@ -254,6 +294,25 @@ namespace Assets.Scripts.Player.Movement
         {
         }
 
-        private 
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ForceToGround()
+        {
+            // Ensure the player stays along the ground
+            Ray ray = new Ray(transform.position, Vector3.down);
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo, floorMask))
+            {
+                // Force the player to the ground
+                Vector3 position = transform.position;
+                position.y = hitInfo.point.y + (playerCollider.height / 2);
+                transform.position = position;
+            }
+            else
+            {
+                Debug.LogError("Player Position Raycast did not hit Floor");
+            }
+        }
     }
 }
