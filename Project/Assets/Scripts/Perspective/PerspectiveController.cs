@@ -192,12 +192,12 @@ namespace Assets.Scripts.Perspective
                 if (cameras[i] != null)
                 {
                     cameras[i].enabled = false;
-                    cameras[i].camera.enabled = false;
+                    cameras[i].GetComponent<Camera>().enabled = false;
                 }
             }
 
             // Ensure the PerspectiveController's Camera is active
-            this.camera.enabled = true;
+            this.GetComponent<Camera>().enabled = true;
 
             // Initialize the Current Camera and copy the properties
             cameras[currentCamera].SetTarget(target);

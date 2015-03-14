@@ -219,6 +219,26 @@ namespace Assets.Scripts.Utility
 
                 return (finalPoint - initialPoint).normalized;
             }
+
+            public static Vector3 ProjectToPlane(Vector3 point, Axis staticAxis = Axis.Y)
+            {
+                switch (staticAxis)
+                {
+                    case Axis.X:
+                        point.x = 0;
+                        break;
+
+                    case Axis.Z:
+                        point.z = 0;
+                        break;
+
+                    case Axis.Y:
+                    default:
+                        point.y = 0;
+                        break;
+                }
+                return point;
+            }
         }
     }
 }

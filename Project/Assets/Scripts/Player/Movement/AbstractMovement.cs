@@ -26,23 +26,14 @@ namespace Assets.Scripts.Player.Movement
     /// <summary>
     /// Describes the base requirements for a Player's movement.
     /// </summary>
+    [RequireComponent (typeof(Animator))]
+    [RequireComponent (typeof(Rigidbody))]
     public abstract class AbstractMovement : MonoBehaviour
     {
         /// <summary>
-        /// The speed that the player will move at.
-        /// </summary>
-        public float speed = 6f;
-
-        /// <summary>
-        /// Flags if movement is occuring.
-        /// </summary>
-        [ReadOnly]
-        public MovementState movementState;
-
-        /// <summary>
         /// Reference to the animator component.
         /// </summary>
-        // public Animator anim;
+        public Animator playerAnimator;
 
         /// <summary>
         /// Reference to the player's rigidbody.
@@ -52,38 +43,10 @@ namespace Assets.Scripts.Player.Movement
         /// <summary>
         /// Default Initialization
         /// </summary>
-        public virtual void InitMovement()
+        public void InitMovement()
         {
-            movementState = new MovementState();
             playerRigidbody = GetComponent<Rigidbody>();
+            playerAnimator = GetComponent<Animator>();
         }
-
-        /// <summary>
-        /// Player Movement must be performed in Fixed Update.
-        /// </summary>
-        public abstract void Move();
-
-        /// <summary>
-        /// The movement must update its state.
-        /// </summary>
-        public abstract void DetermineState();
-
-        /// <summary>
-        /// The movement must update its position.
-        /// </summary>
-        public abstract void UpdatePosition();
-
-        /// <summary>
-        /// The movement must update its rotation.
-        /// </summary>
-        public virtual void UpdateRotation()
-        {
-            // Perform any rotation necessary.
-        }
-
-        /// <summary>
-        /// The movement must update its rotation.
-        /// </summary>
-        public abstract void UpdateAnimation();
     }
 }
