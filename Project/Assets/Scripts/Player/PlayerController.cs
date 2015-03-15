@@ -24,13 +24,9 @@ namespace Assets.Scripts.Player
 {
     [RequireComponent (typeof (Rigidbody))]
     [RequireComponent (typeof (CapsuleCollider))]
+    [RequireComponent (typeof (PointClickMovement))]
     public class PlayerController : MonoBehaviour
     {
-        /// <summary>
-        /// Reference to the animator component.
-        /// </summary>
-        // public Animator anim;
-
         /// <summary>
         /// Reference to the player's rigidbody.
         /// </summary>
@@ -44,23 +40,27 @@ namespace Assets.Scripts.Player
         /// <summary>
         /// 
         /// </summary>
-        public AbstractMovement movement;
+        public PointClickMovement movement;
 
 
         /// <summary>
         /// 
         /// </summary>
-        void Awake()
+        void Start()
         {
+            // Init References
+            playerRigidbody = GetComponent<Rigidbody>();
+            playerCollider = GetComponent<CapsuleCollider>();
+            movement = GetComponent<PointClickMovement>();
+
             // Ensure Rigidbody Characteristics
-            playerRigidbody.mass = 50;
-            playerRigidbody.drag = 0;
-            playerRigidbody.angularDrag = 0;
-            playerRigidbody.useGravity = false;
+            playerRigidbody.isKinematic = true;
         }
 
-
-        void FixedUpdate()
+        /// <summary>
+        /// 
+        /// </summary>
+        void Update()
         {
             // Perform the player movement
             movement.Move();

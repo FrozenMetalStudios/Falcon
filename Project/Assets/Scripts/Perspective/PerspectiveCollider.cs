@@ -59,7 +59,7 @@ namespace Assets.Scripts.Perspective
         void Start()
         {
             // Collider should be a Trigger
-            if (!collider.isTrigger)
+            if (!GetComponent<Collider>().isTrigger)
             {
                 Debug.LogWarning("PerspectiveCollider should be set to trigger.");
             }
