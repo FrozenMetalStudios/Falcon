@@ -19,7 +19,6 @@
  *******************************************************************/
 using UnityEngine;
 using System.Collections;
-using Assets.Scripts.CustomEditor;
 
 namespace Assets.Scripts.Player.Movement
 {

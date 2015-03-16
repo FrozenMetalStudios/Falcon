@@ -86,7 +86,7 @@ NavMeshSettings:
     minRegionArea: 1
     cellSize: .166666672
     manualCellSize: 0
-  m_NavMeshData: {fileID: 23800000, guid: af1a19d1e314fa34aa7b0249d6a1f78a, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 8018b1bd8b077184eb77a9ac18f26483, type: 2}
 --- !u!1 &453701233
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +942,7 @@ GameObject:
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 3
+  m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!23 &1814409466
