@@ -18,9 +18,9 @@
  * 
  *******************************************************************/
 using UnityEngine;
-using Assets.Scripts.Player.Movement;
+using Assets.Scripts.Actors.Player.Movement;
 
-namespace Assets.Scripts.Player
+namespace Assets.Scripts.Actors.Player
 {
     [RequireComponent (typeof (Rigidbody))]
     [RequireComponent (typeof (CapsuleCollider))]

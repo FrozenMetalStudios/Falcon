@@ -20,7 +20,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts.Enemy.Combat
+namespace Assets.Scripts.Actors.Enemy.Combat
 {
     public class EnemyStatProfile
     {

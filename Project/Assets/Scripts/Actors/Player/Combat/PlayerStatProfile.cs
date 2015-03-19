@@ -12,7 +12,7 @@
  * 
  * *****************************************************************
  * 
- * Filename: EnemyController.cs
+ * Filename: PlayerStatProfile.cs
  * 
  * Description: 
  * 
@@ -20,14 +20,17 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts.Enemy
+namespace Assets.Scripts.Actors.Player.Combat
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(CapsuleCollider))]
-    public class EnemyController
+    public class PlayerStatProfile
     {
+        /*
+         * All Player Stats can be stored here.
+         */
+
+        /*
+         * Any Function related to setting the Stats,
+         * or computing stats can also go here.
+         */
     }
 }

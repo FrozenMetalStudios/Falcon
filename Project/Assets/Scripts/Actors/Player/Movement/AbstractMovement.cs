@@ -20,7 +20,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Assets.Scripts.Player.Movement
+namespace Assets.Scripts.Actors.Player.Movement
 {
     /// <summary>
     /// Describes the base requirements for a Player's movement.

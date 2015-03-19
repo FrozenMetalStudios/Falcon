@@ -28,7 +28,7 @@ using Assets.Scripts.CustomEditor;
 using VectSupp = Assets.Scripts.Utility.FmsMath.VectorMath;
 
 
-namespace Assets.Scripts.Player.Movement
+namespace Assets.Scripts.Actors.Player.Movement
 {
     /// <summary>
     /// Implements Point and Click movement.

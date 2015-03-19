@@ -1,29 +1,63 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
 namespace Assets.Scripts.Utility
 {
+    public enum ELogCategory
+    {
+        General,
+        Control,
+        Navigation,
+        Animation,
+        Combat
+    };
+
+    public enum ELogLevel
+    {
+        System = 0,
+        Assert,
+        Error,
+        Warning,
+        Trace
+    };
+
     public class Logger : MonoBehaviour
     {
-        private enum EMessageType
+        private class CategoryConfig
         {
-            Trace,
-            Warning,
-            Error,
-            Assert
+            public ELogLevel _level;
+            public String _logFile;
+            public bool _useIndependantLog;
+
+            public CategoryConfig(ELogLevel level, String file, bool useIndependant)
+            {
+                _level = level;
+                _logFile = file;
+                _useIndependantLog = useIndependant;
+            }
+        }
+
+        private Dictionary<ELogCategory, CategoryConfig> configuration = new Dictionary<ELogCategory, CategoryConfig>()
+        {
+            {ELogCategory.Control,      new CategoryConfig(ELogLevel.Trace, "Control.log",      false)},
+            {ELogCategory.Navigation,   new CategoryConfig(ELogLevel.Trace, "NavLog.log",       true)},
+            {ELogCategory.Animation,    new CategoryConfig(ELogLevel.Trace, "AnimationLog.log", true)},
+            {ELogCategory.Combat,       new CategoryConfig(ELogLevel.Trace, "CombatLog.log",    true)}
         };
 
-        public string LogFile = "Log.txt";
+        static private String generalLog = "ApplicationLog.log";
+
         public bool EchoToConsole = true;
         public bool AddTimeStamp = true;
 
         public bool BreakOnError = true;
         public bool BreakOnAssert = true;
 
-        private StreamWriter _OutputStream;
+        private Dictionary<String, StreamWriter> logWriters = new Dictionary<string, StreamWriter>();
 
         private static Logger _Singleton = null;
 
@@ -34,6 +68,11 @@ namespace Assets.Scripts.Utility
 
         public void Awake()
         {
+            Initialize();
+        }
+
+        public void Initialize()
+        {
             if (null != _Singleton)
             {
                 UnityEngine.Debug.LogError("Logger.cs: Multiple Logger Singletons Exist!");
@@ -41,32 +80,65 @@ namespace Assets.Scripts.Utility
             }
             _Singleton = this;
 
-            _OutputStream = new StreamWriter(LogFile, true, System.Text.Encoding.UTF8);
+            // Initialize the General Log file
+            logWriters.Add(generalLog, new StreamWriter(generalLog, true, System.Text.Encoding.UTF8));
         }
 
-        private void Write(EMessageType type, string message)
+        private void Write(ELogCategory category, ELogLevel level, String message)
         {
+            // Ensure the level is within desired levels
+            CategoryConfig conf = configuration[category];
+            if (level > conf._level)
+            {
+                return;
+            }
 
+            // Get the desired Output Stream for the Category
+            StreamWriter outputStream;
+            if (conf._useIndependantLog)
+            {
+                if (logWriters.ContainsKey(conf._logFile))
+                {
+                    outputStream = logWriters[conf._logFile];
+                }
+                else
+                {
+                    outputStream = new StreamWriter(conf._logFile, true, System.Text.Encoding.UTF8);
+                    logWriters.Add(conf._logFile, outputStream);
+                }
+            }
+            else
+            {
+                // Default File Writer
+                outputStream = logWriters[generalLog];
+            }
+
+            // Add timestamp to the message
             if (AddTimeStamp)
             {
                 DateTime current = DateTime.Now;
-                message = string.Format("[{0:HH:mm:ss:fff}] {1:7} : {2}",
-                                        current, type.ToString("G"), message);
+                message = string.Format("[{0:HH:mm:ss:fff}] {1:7} : {2:10} - {3}",
+                                        current, level.ToString("G"), 
+                                        category.ToString("G"), 
+                                        message);
             }
 
-            if (null != _OutputStream)
+            // Commit the message to the file
+            if (null != outputStream)
             {
-                _OutputStream.WriteLine(message);
-                _OutputStream.Flush();
+                outputStream.WriteLine(message);
+                outputStream.Flush();
             }
+
 #if !FINAL
+            // Echo to the Console if a debug
             if (EchoToConsole)
             {
-                if (EMessageType.Trace == type)
+                if (ELogLevel.Trace == level)
                 {
                     UnityEngine.Debug.Log(message);
                 }
-                else if (EMessageType.Warning == type)
+                else if (ELogLevel.Warning == level)
                 {
                     UnityEngine.Debug.LogWarning(message);
                 }
@@ -80,53 +152,24 @@ namespace Assets.Scripts.Utility
 
         //-------------------------------------------------------------------------------------------------------------------------
         [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void Trace(string Message)
+        public static void LogMessage(ELogCategory category, ELogLevel level, String message)
         {
 #if !FINAL
             if (null != Logger.Singleton)
             {
-                Logger.Singleton.Write(EMessageType.Trace, Message);
+                Logger.Singleton.Write(category, level, message);
             }
-            else
+            else if (ELogLevel.System == level)
             {
                 // Fallback if the debugging system hasn't been initialized yet.
-                UnityEngine.Debug.Log(Message);
+                UnityEngine.Debug.Log(message);
             }
 #endif
         }
 
         //-------------------------------------------------------------------------------------------------------------------------
         [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void Warning(string Message)
-        {
-#if !FINAL
-            if (null != Logger.Singleton)
-            {
-                Logger.Singleton.Write(EMessageType.Warning, Message);
-            }
-#endif
-        }
-
-        //-------------------------------------------------------------------------------------------------------------------------
-        [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void Error(string Message)
-        {
-#if !FINAL
-            if (null != Logger.Singleton)
-            {
-                Logger.Singleton.Write(EMessageType.Error, Message);
-
-                if (Logger.Singleton.BreakOnError)
-                {
-                    UnityEngine.Debug.Break();
-                }
-            }
-#endif
-        }
-
-        //-------------------------------------------------------------------------------------------------------------------------
-        [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void Assert(bool condition, string Message)
+        public static void Assert(ELogCategory category, bool condition, String message)
         {
 #if !FINAL
             if (condition)
@@ -136,7 +179,7 @@ namespace Assets.Scripts.Utility
 
             if (null != Logger.Singleton)
             {
-                Logger.Singleton.Write(EMessageType.Assert, Message);
+                Logger.Singleton.Write(category, ELogLevel.Assert, message);
 
                 if (Logger.Singleton.BreakOnAssert)
                 {
@@ -146,13 +189,18 @@ namespace Assets.Scripts.Utility
 #endif
         }
 
+        public void Cleanup()
+        {
+            foreach (var item in logWriters.Values)
+            {
+                item.Close();
+            }
+            logWriters.Clear();
+        }
+
         public void OnDestroy()
         {
-            if (null != _OutputStream)
-            {
-                _OutputStream.Close();
-                _OutputStream = null;
-            }
+            Cleanup();
         }
     }
 }

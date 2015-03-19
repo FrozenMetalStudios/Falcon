@@ -89,7 +89,9 @@ namespace Assets.Scripts
         //-------------------------------------------------------------------------------------------------------------------------
         public void LoadLevel(string level)
         {
-            Logger.Trace("SceneManager: Loading Level, " + level);
+            Logger.LogMessage(ELogCategory.Control,
+                              ELogLevel.Trace,
+                              "SceneManager: Loading Level, " + level);
 
             _CurrentScene = level;
             Application.LoadLevel(_CurrentScene);
@@ -98,7 +100,9 @@ namespace Assets.Scripts
         //-------------------------------------------------------------------------------------------------------------------------
         public void ResetLevel()
         {
-            Logger.Trace("SceneManager: Restarting Level, " + _CurrentScene);
+            Logger.LogMessage(ELogCategory.Control,
+                              ELogLevel.Trace,
+                              "SceneManager: Restarting Level, " + _CurrentScene);
 
             Application.LoadLevel(_CurrentScene);
         }
@@ -176,6 +180,10 @@ namespace Assets.Scripts
             string fps_string = String.Format("FPS: {0:d2}", (int) _FPS);
             GUI.Label(new Rect(10, 10, 600, 30), fps_string);
 #endif
+        }
+
+        public void OnDestroy()
+        {
         }
     }
 }

@@ -63,8 +63,10 @@ namespace Assets.Scripts.Utility.Detectors
 
             // Find the Distance from base point to the input
             float distance = Vector3.Distance(reference, target);
-            Logger.Trace(string.Format("Distance: {0}", distance));
-            Logger.Trace(string.Format("Radius: {0}", radius));
+            Logger.LogMessage(ELogCategory.Navigation, ELogLevel.Trace,
+                              string.Format("Distance: {0}", distance));
+            Logger.LogMessage(ELogCategory.Navigation, ELogLevel.Trace, 
+                              string.Format("Radius: {0}", radius));
 
             // If the distance from our center to the 
             if (distance <= radius)

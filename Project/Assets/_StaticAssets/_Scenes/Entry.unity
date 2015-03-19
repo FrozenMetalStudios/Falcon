@@ -115,7 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d0d9f84f0c0a0343a32c47c9d74e68c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LogFile: Log.txt
   EchoToConsole: 1
   AddTimeStamp: 1
   BreakOnError: 1
@@ -132,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameTitle: Project Falcon
-  DisplayLogo: 1
+  DisplayedLogo: 0
 --- !u!4 &2028005630
 Transform:
   m_ObjectHideFlags: 0
