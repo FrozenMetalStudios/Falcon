@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts;
+using Assets.Scripts.Utility;
 
 namespace Assets.Scripts.Menu
 {
@@ -35,15 +36,15 @@ namespace Assets.Scripts.Menu
         //-------------------------------------------------------------------------------------------------------------------------
         void Start()
         {
-            Debug.Log("MainMenu: Starting.");
-
             // Is the controlling App already in existence?
             if (GameObject.Find("Managers") == null)
             {
-                Debug.Log("Creating temporary App");
-
                 Instantiate(AppPrefab);
             }
+
+            Logger.LogMessage(eLogCategory.Control,
+                              eLogLevel.Trace, 
+                              "MainMenu: Starting.");
 
             StateId = EMainMenuState.Startup;
             ButtonId = EMenuButtonId.None;
@@ -55,7 +56,9 @@ namespace Assets.Scripts.Menu
             switch (StateId)
             {
                 case EMainMenuState.Startup:
-                    Debug.Log("MainMenu: State: Startup.");
+                    Logger.LogMessage(eLogCategory.Control,
+                                      eLogLevel.Trace, 
+                                      "MainMenu: State: Startup.");
 
                     // Here we would do any menu preparation work.
 
@@ -81,17 +84,23 @@ namespace Assets.Scripts.Menu
                 case EMainMenuState.Menu:
                     if (ButtonId == EMenuButtonId.Dev_Scene_Dan)
                     {
-                        Debug.Log("MainMenu: Dev_Scene_Dan Selected.");
+                        Logger.LogMessage(eLogCategory.Control,
+                                          eLogLevel.Trace, 
+                                          "MainMenu: Dev_Scene_Dan Selected.");
                         SceneManager.Singleton.LoadLevel("Dev_Scene_Dan");
                     }
                     else if (ButtonId == EMenuButtonId.Dev_Scene_Andy)
                     {
-                        Debug.Log("MainMenu: Dev_Scene_Andy Selected.");
+                        Logger.LogMessage(eLogCategory.Control,
+                                          eLogLevel.Trace, 
+                                          "MainMenu: Dev_Scene_Andy Selected.");
                         SceneManager.Singleton.LoadLevel("Dev_Scene_Andy");
                     }
                     else if (ButtonId == EMenuButtonId.Quit)
                     {
-                        Debug.Log("MainMenu: Quit Selected.");
+                        Logger.LogMessage(eLogCategory.Control,
+                                          eLogLevel.Trace,
+                                          "MainMenu: Quit Selected.");
                         SceneManager.Singleton.Quit();
                     }
 
@@ -99,7 +108,9 @@ namespace Assets.Scripts.Menu
                     break;
 
                 default:
-                    Debug.LogError("Really shouldn't be here... illegal state id set.");
+                    Logger.LogMessage(eLogCategory.Control,
+                                      eLogLevel.Error,
+                                      "Really shouldn't be here... illegal state id set.");
 
                     // Auto recover.
                     StateId = EMainMenuState.Startup;
@@ -121,7 +132,7 @@ namespace Assets.Scripts.Menu
                     ButtonId = EMenuButtonId.Dev_Scene_Dan;
                 }
 
-                if (GUI.Button(new Rect(200.0f, 250.0f, 300.0f, 100.0f), "Dev_Scene_Andy"))
+                if (GUI.Button(new Rect(200.0f, 200.0f, 300.0f, 100.0f), "Dev_Scene_Andy"))
                 {
                     ButtonId = EMenuButtonId.Dev_Scene_Andy;
                 }

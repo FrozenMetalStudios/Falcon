@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define STANDALONE_MONOBEHAVIOUR
+
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.IO;
 
 namespace Assets.Scripts.Utility
 {
-    public enum ELogCategory
+    public enum eLogCategory
     {
         General,
         Control,
@@ -16,7 +18,7 @@ namespace Assets.Scripts.Utility
         Combat
     };
 
-    public enum ELogLevel
+    public enum eLogLevel
     {
         System = 0,
         Assert,
@@ -25,15 +27,20 @@ namespace Assets.Scripts.Utility
         Trace
     };
 
+#if STANDALONE_MONOBEHAVIOUR
     public class Logger : MonoBehaviour
+#else
+    [Serializable]
+    public class Logger
+#endif
     {
         private class CategoryConfig
         {
-            public ELogLevel _level;
+            public eLogLevel _level;
             public String _logFile;
             public bool _useIndependantLog;
 
-            public CategoryConfig(ELogLevel level, String file, bool useIndependant)
+            public CategoryConfig(eLogLevel level, String file, bool useIndependant)
             {
                 _level = level;
                 _logFile = file;
@@ -41,15 +48,15 @@ namespace Assets.Scripts.Utility
             }
         }
 
-        private Dictionary<ELogCategory, CategoryConfig> configuration = new Dictionary<ELogCategory, CategoryConfig>()
+        private Dictionary<eLogCategory, CategoryConfig> configuration = new Dictionary<eLogCategory, CategoryConfig>()
         {
-            {ELogCategory.Control,      new CategoryConfig(ELogLevel.Trace, "Control.log",      false)},
-            {ELogCategory.Navigation,   new CategoryConfig(ELogLevel.Trace, "NavLog.log",       true)},
-            {ELogCategory.Animation,    new CategoryConfig(ELogLevel.Trace, "AnimationLog.log", true)},
-            {ELogCategory.Combat,       new CategoryConfig(ELogLevel.Trace, "CombatLog.log",    true)}
+            {eLogCategory.Control,      new CategoryConfig(eLogLevel.Trace, "Control.log",      false)},
+            {eLogCategory.Navigation,   new CategoryConfig(eLogLevel.Trace, "NavLog.log",       false)},
+            {eLogCategory.Animation,    new CategoryConfig(eLogLevel.Trace, "AnimationLog.log", false)},
+            {eLogCategory.Combat,       new CategoryConfig(eLogLevel.Trace, "CombatLog.log",    false)}
         };
 
-        static private String generalLog = "ApplicationLog.log";
+        public String generalLog = "ApplicationLog.log";
 
         public bool EchoToConsole = true;
         public bool AddTimeStamp = true;
@@ -66,11 +73,6 @@ namespace Assets.Scripts.Utility
             get { return _Singleton; }
         }
 
-        public void Awake()
-        {
-            Initialize();
-        }
-
         public void Initialize()
         {
             if (null != _Singleton)
@@ -81,10 +83,10 @@ namespace Assets.Scripts.Utility
             _Singleton = this;
 
             // Initialize the General Log file
-            logWriters.Add(generalLog, new StreamWriter(generalLog, true, System.Text.Encoding.UTF8));
+            logWriters.Add(generalLog, new StreamWriter(generalLog, false, System.Text.Encoding.UTF8));
         }
 
-        private void Write(ELogCategory category, ELogLevel level, String message)
+        private void Write(eLogCategory category, eLogLevel level, String message)
         {
             // Ensure the level is within desired levels
             CategoryConfig conf = configuration[category];
@@ -103,7 +105,7 @@ namespace Assets.Scripts.Utility
                 }
                 else
                 {
-                    outputStream = new StreamWriter(conf._logFile, true, System.Text.Encoding.UTF8);
+                    outputStream = new StreamWriter(conf._logFile, false, System.Text.Encoding.UTF8);
                     logWriters.Add(conf._logFile, outputStream);
                 }
             }
@@ -134,11 +136,11 @@ namespace Assets.Scripts.Utility
             // Echo to the Console if a debug
             if (EchoToConsole)
             {
-                if (ELogLevel.Trace == level)
+                if (eLogLevel.Trace == level)
                 {
                     UnityEngine.Debug.Log(message);
                 }
-                else if (ELogLevel.Warning == level)
+                else if (eLogLevel.Warning == level)
                 {
                     UnityEngine.Debug.LogWarning(message);
                 }
@@ -152,14 +154,14 @@ namespace Assets.Scripts.Utility
 
         //-------------------------------------------------------------------------------------------------------------------------
         [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void LogMessage(ELogCategory category, ELogLevel level, String message)
+        public static void LogMessage(eLogCategory category, eLogLevel level, String message)
         {
 #if !FINAL
             if (null != Logger.Singleton)
             {
                 Logger.Singleton.Write(category, level, message);
             }
-            else if (ELogLevel.System == level)
+            else if (eLogLevel.System == level)
             {
                 // Fallback if the debugging system hasn't been initialized yet.
                 UnityEngine.Debug.Log(message);
@@ -169,7 +171,7 @@ namespace Assets.Scripts.Utility
 
         //-------------------------------------------------------------------------------------------------------------------------
         [Conditional("DEBUG"), Conditional("PROFILE")]
-        public static void Assert(ELogCategory category, bool condition, String message)
+        public static void Assert(eLogCategory category, bool condition, String message)
         {
 #if !FINAL
             if (condition)
@@ -179,7 +181,7 @@ namespace Assets.Scripts.Utility
 
             if (null != Logger.Singleton)
             {
-                Logger.Singleton.Write(category, ELogLevel.Assert, message);
+                Logger.Singleton.Write(category, eLogLevel.Assert, message);
 
                 if (Logger.Singleton.BreakOnAssert)
                 {
@@ -198,9 +200,16 @@ namespace Assets.Scripts.Utility
             logWriters.Clear();
         }
 
+#if STANDALONE_MONOBEHAVIOUR
+        public void Awake()
+        {
+            Initialize();
+        }
+
         public void OnDestroy()
         {
             Cleanup();
         }
+#endif
     }
 }

@@ -96,7 +96,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 2028005630}
   - 114: {fileID: 2028005629}
-  - 114: {fileID: 2028005628}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -104,21 +103,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2028005628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2028005627}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d0d9f84f0c0a0343a32c47c9d74e68c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  EchoToConsole: 1
-  AddTimeStamp: 1
-  BreakOnError: 1
-  BreakOnAssert: 1
 --- !u!114 &2028005629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +116,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameTitle: Project Falcon
   DisplayedLogo: 0
+  logger:
+    generalLog: ApplicationLog.log
+    EchoToConsole: 1
+    AddTimeStamp: 1
+    BreakOnError: 1
+    BreakOnAssert: 1
 --- !u!4 &2028005630
 Transform:
   m_ObjectHideFlags: 0

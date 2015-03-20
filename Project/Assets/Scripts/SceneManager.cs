@@ -42,6 +42,9 @@ namespace Assets.Scripts
         private int _FPSFrames;
 #endif
 
+        //---------------------------------------------------------------------
+        public Logger logger = new Logger();
+
         // --------------------------------------------------------------------
         static SceneManager _Singleton = null;
 
@@ -54,14 +57,20 @@ namespace Assets.Scripts
         // --------------------------------------------------------------------
         void Awake()
         {
-            // Log Startup - Cannot use Logger due to uncertain initialization order
-            UnityEngine.Debug.Log("SceneManager: Awake.");
-
+            // Ensure only 1 singleton
             if (null != _Singleton)
             {
                 UnityEngine.Debug.LogError("SceneManager: Multiple SceneManagers violate Singleton pattern.");
             }
             _Singleton = this;
+
+            // Initialize the Logger
+            logger.Initialize();
+
+            // Trace Startup
+            Logger.LogMessage(eLogCategory.Control,
+                              eLogLevel.Trace,
+                              "SceneManager: Awake.");
 
             // Init the FPS Tracker
             InitFPS();
@@ -74,7 +83,9 @@ namespace Assets.Scripts
 
 #if !FINAL
                 // Load the Debug Scene Selector
-                UnityEngine.Debug.Log("SceneManager: Loading SceneSelector");
+                Logger.LogMessage(eLogCategory.Control,
+                                  eLogLevel.Trace,
+                                  "SceneManager: Loading SceneSelector");
                 _CurrentScene = "SceneSelector";
                 Application.LoadLevel(_CurrentScene);
 #endif
@@ -89,8 +100,8 @@ namespace Assets.Scripts
         //-------------------------------------------------------------------------------------------------------------------------
         public void LoadLevel(string level)
         {
-            Logger.LogMessage(ELogCategory.Control,
-                              ELogLevel.Trace,
+            Logger.LogMessage(eLogCategory.Control,
+                              eLogLevel.Trace,
                               "SceneManager: Loading Level, " + level);
 
             _CurrentScene = level;
@@ -100,8 +111,8 @@ namespace Assets.Scripts
         //-------------------------------------------------------------------------------------------------------------------------
         public void ResetLevel()
         {
-            Logger.LogMessage(ELogCategory.Control,
-                              ELogLevel.Trace,
+            Logger.LogMessage(eLogCategory.Control,
+                              eLogLevel.Trace,
                               "SceneManager: Restarting Level, " + _CurrentScene);
 
             Application.LoadLevel(_CurrentScene);
@@ -123,7 +134,9 @@ namespace Assets.Scripts
         //-------------------------------------------------------------------------------------------------------------------------
         public void Quit()
         {
-            UnityEngine.Debug.Log("SceneManager: Terminating.");
+            Logger.LogMessage(eLogCategory.Control,
+                              eLogLevel.Trace, 
+                              "SceneManager: Terminating.");
             Application.Quit();
         }
 
@@ -184,6 +197,8 @@ namespace Assets.Scripts
 
         public void OnDestroy()
         {
+            // Cleanup the logger
+            logger.Cleanup();
         }
     }
 }
