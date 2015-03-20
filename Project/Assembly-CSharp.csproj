@@ -75,6 +75,11 @@
      <Compile Include="Assets\Scripts\Utility\Timers\FrameTimer.cs" />
      <Compile Include="Assets\Scripts\Utility\Timers\PhysicsTimer.cs" />
      <Compile Include="Assets\Scripts\Utility\Timers\UnreliableTimer.cs" />
+     <Compile Include="Assets\_StaticAssets\Scripts\CameraController.cs" />
+     <Compile Include="Assets\_StaticAssets\Scripts\EnemyHealth.cs" />
+     <Compile Include="Assets\_StaticAssets\Scripts\HUDHealth.cs" />
+     <Compile Include="Assets\_StaticAssets\Scripts\PlayerController.cs" />
+     <Compile Include="Assets\_StaticAssets\Scripts\Rotator.cs" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
      <None Include="Assets\Resources\Supporting\Readme.txt" />
