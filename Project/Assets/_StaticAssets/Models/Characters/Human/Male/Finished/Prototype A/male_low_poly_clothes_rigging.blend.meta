@@ -751,6 +751,7 @@ ModelImporter:
     2300202: WGT-VIS-thigh_pole_ik_R
     2300204: WGT-VIS-upper_arm_pole_ik_L
     2300206: WGT-VIS-upper_arm_pole_ik_R
+    2300208: char_pants
     3300000: char_shirt
     3300002: WGT-chest
     3300004: WGT-elbow_hose_L
@@ -855,6 +856,7 @@ ModelImporter:
     3300202: WGT-VIS-thigh_pole_ik_R
     3300204: WGT-VIS-upper_arm_pole_ik_L
     3300206: WGT-VIS-upper_arm_pole_ik_R
+    3300208: char_pants
     4300000: WGT-root
     4300002: WGT-thumb_03_R
     4300004: WGT-thumb_02_R
