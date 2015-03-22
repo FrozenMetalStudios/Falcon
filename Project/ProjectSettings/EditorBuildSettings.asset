@@ -10,6 +10,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_StaticAssets/_Scenes/SceneSelector.unity
   - enabled: 1
-    path: Assets/_StaticAssets/_Scenes/Dev_Scene_Dan.unity
+    path: Assets/_StaticAssets/_Scenes/Development/Dev_Dan/Dev_Scene_Dan.unity
   - enabled: 1
-    path: Assets/_StaticAssets/_Scenes/Dev_Scene_Andy.unity
+    path: Assets/_StaticAssets/_Scenes/Development/Dev_Andy/Dev_Scene_Andy.unity
