@@ -6,6 +6,14 @@ Library/
 
 
 #----------------------
+# Project generated
+#----------------------
+*.log
+Platforms/
+Logs/
+
+
+#----------------------
 # Visual Studio / MonoDevelop Generated
 #----------------------
 ExportedObj/
