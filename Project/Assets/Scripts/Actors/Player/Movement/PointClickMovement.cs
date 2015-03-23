@@ -72,6 +72,11 @@ namespace Assets.Scripts.Actors.Player.Movement
         public NavMeshAgent navMeshAgent;
 
         /// <summary>
+        /// 
+        /// </summary>
+        private Vector3 initialRotation;
+
+        /// <summary>
         /// Configure before first Frame load.
         /// </summary>
         void Start()
@@ -83,14 +88,20 @@ namespace Assets.Scripts.Actors.Player.Movement
             dragTimer = new PhysicsTimer(dragDelay);
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.updatePosition = false; // Allows Animation Sync
+            navMeshAgent.updateRotation = false; // Allows rotation offset incase of bad model import
             navMeshAgent.acceleration = float.MaxValue; // Set infinitly high acceleration
             navMeshAgent.angularSpeed = float.MaxValue; // Set infinitly high angular speed
 
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
 
+<<<<<<< HEAD
 			// Store initial rotation
 			initialRotation = transform.rotation;
+=======
+            // Store initial rotation
+            initialRotation = transform.rotation.eulerAngles;
+>>>>>>> origin/master
         }
 
         /// <summary>
@@ -105,6 +116,9 @@ namespace Assets.Scripts.Actors.Player.Movement
 
             // Determine where we will be next and how fast
             DetermineAnimationParameters();
+
+            // Update the Rotation
+            UpdateRotation();
 
             // Update the Position
             UpdatePosition();
@@ -139,12 +153,16 @@ namespace Assets.Scripts.Actors.Player.Movement
                     else
                     {
                         // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
+<<<<<<< HEAD
 						Quaternion newRotation = Quaternion.LookRotation(VectSupp.DirectionAlongPlane(transform.position, floorHit.point));
 
 						newRotation = newRotation * Quaternion.Euler(initialRotation.eulerAngles);
 
                         // Set the player's rotation to this new rotation.
 						playerRigidbody.MoveRotation(newRotation);
+=======
+                        UpdateRotation(floorHit.point);
+>>>>>>> origin/master
                     }
                 }
             }
@@ -169,6 +187,24 @@ namespace Assets.Scripts.Actors.Player.Movement
         {
             // Update animation state and velocity info?
             // http://docs.unity3d.com/Manual/nav-CouplingAnimationAndNavigation.html
+        }
+
+        void UpdateRotation()
+        {
+            if (navMeshAgent.remainingDistance != 0.0)
+            {
+                UpdateRotation(navMeshAgent.steeringTarget);
+            }
+        }
+
+        void UpdateRotation(Vector3 point)
+        {
+            // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
+            Quaternion newRotation = Quaternion.LookRotation(VectSupp.DirectionAlongPlane(transform.position, point));
+            newRotation = newRotation * Quaternion.Euler(initialRotation);
+
+            // Set the player's rotation to this new rotation.
+            this.transform.rotation = newRotation;
         }
 
         /// <summary>
