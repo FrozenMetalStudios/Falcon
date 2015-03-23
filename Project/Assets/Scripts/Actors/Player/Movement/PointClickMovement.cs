@@ -45,7 +45,7 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// The length of the ray from the camera into the scene.
         /// </summary>
         private float camRayLength = 100f;
-
+		private Quaternion initialRotation;
         /// <summary>
         /// The delay before a Drag move is enabled.
         /// </summary>
@@ -88,6 +88,9 @@ namespace Assets.Scripts.Actors.Player.Movement
 
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
+
+			// Store initial rotation
+			initialRotation = transform.rotation;
         }
 
         /// <summary>
@@ -136,10 +139,12 @@ namespace Assets.Scripts.Actors.Player.Movement
                     else
                     {
                         // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
-                        Quaternion newRotatation = Quaternion.LookRotation(VectSupp.DirectionAlongPlane(transform.position, floorHit.point));
+						Quaternion newRotation = Quaternion.LookRotation(VectSupp.DirectionAlongPlane(transform.position, floorHit.point));
+
+						newRotation = newRotation * Quaternion.Euler(initialRotation.eulerAngles);
 
                         // Set the player's rotation to this new rotation.
-                        playerRigidbody.MoveRotation(newRotatation);
+						playerRigidbody.MoveRotation(newRotation);
                     }
                 }
             }
