@@ -45,7 +45,7 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// The length of the ray from the camera into the scene.
         /// </summary>
         private float camRayLength = 100f;
-		private Quaternion initialRotation;
+
         /// <summary>
         /// The delay before a Drag move is enabled.
         /// </summary>
@@ -95,13 +95,8 @@ namespace Assets.Scripts.Actors.Player.Movement
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
 
-<<<<<<< HEAD
-			// Store initial rotation
-			initialRotation = transform.rotation;
-=======
             // Store initial rotation
             initialRotation = transform.rotation.eulerAngles;
->>>>>>> origin/master
         }
 
         /// <summary>
@@ -139,30 +134,26 @@ namespace Assets.Scripts.Actors.Player.Movement
                 // Create a RaycastHit variable to store information about what was hit by the ray.
                 RaycastHit floorHit;
 
+                GameObject objectHit;
+
                 // Update the drag timer and store the state
                 dragMovementFlag = dragTimer.UpdateAndCheck();
+
 
                 // Perform the raycast and if it hits something on the floor layer...
                 if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
                 {
+                    objectHit = floorHit.collider.gameObject;
+                    print(objectHit.tag);
                     // Check to see if the point is within the minimum point distance
-                    if (!CircularPlaneDetector.InGeometry(transform.position, floorHit.point, minimumMovementRadius, VectSupp.Axis.Y))
+                    if (!CircularPlaneDetector.InGeometry(transform.position, floorHit.point, minimumMovementRadius, VectSupp.Axis.Y) && ("Floor" == objectHit.gameObject.tag))
                     {
                         navMeshAgent.destination = floorHit.point;
                     }
                     else
                     {
                         // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
-<<<<<<< HEAD
-						Quaternion newRotation = Quaternion.LookRotation(VectSupp.DirectionAlongPlane(transform.position, floorHit.point));
-
-						newRotation = newRotation * Quaternion.Euler(initialRotation.eulerAngles);
-
-                        // Set the player's rotation to this new rotation.
-						playerRigidbody.MoveRotation(newRotation);
-=======
                         UpdateRotation(floorHit.point);
->>>>>>> origin/master
                     }
                 }
             }
