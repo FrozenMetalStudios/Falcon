@@ -13,6 +13,7 @@ ModelImporter:
     100010: sword_handle_001
     100012: sword_hilt
     100014: sword_hilt_001
+    100016: sword
     400000: Plane
     400002: //RootNode
     400004: sword_blade
@@ -21,6 +22,7 @@ ModelImporter:
     400010: sword_handle_001
     400012: sword_hilt
     400014: sword_hilt_001
+    400016: sword
     2300000: Plane
     2300002: sword_blade
     2300004: sword_blade_001
@@ -28,6 +30,7 @@ ModelImporter:
     2300008: sword_handle_001
     2300010: sword_hilt
     2300012: sword_hilt_001
+    2300014: sword
     3300000: Plane
     3300002: sword_blade
     3300004: sword_blade_001
@@ -35,6 +38,7 @@ ModelImporter:
     3300008: sword_handle_001
     3300010: sword_hilt
     3300012: sword_hilt_001
+    3300014: sword
     4300000: sword_handle_001
     4300002: Plane
     4300004: sword_handle
@@ -42,6 +46,7 @@ ModelImporter:
     4300008: sword_hilt_001
     4300010: sword_hilt
     4300012: sword_blade
+    4300014: sword
     7400000: Default Take
     9500000: //RootNode
   materials:

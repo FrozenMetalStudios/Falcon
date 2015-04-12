@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Actors\Enemy\Combat\EnemyStatProfile.cs" />
      <Compile Include="Assets\Scripts\Actors\Enemy\EnemyController.cs" />
+     <Compile Include="Assets\Scripts\Actors\Player\Combat\PlayerAttack.cs" />
      <Compile Include="Assets\Scripts\Actors\Player\Combat\PlayerStatProfile.cs" />
      <Compile Include="Assets\Scripts\Actors\Player\Movement\AbstractMovement.cs" />
      <Compile Include="Assets\Scripts\Actors\Player\Movement\PointClickMovement.cs" />
