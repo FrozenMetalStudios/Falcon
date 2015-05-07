@@ -1,11 +1,30 @@
-﻿using UnityEngine;
+﻿/*******************************************************************
+ * 
+ * Copyright (C) 2015 Frozen Metal Studios - All Rights Reserved
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Frozen Metal Studios. The intellectual and 
+ * technical concepts contained herein are proprietary to 
+ * Frozen Metal Studios are protected by copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Frozen Metal Studios.
+ * 
+ * *****************************************************************
+ * 
+ * Filename: PlayerAttack.cs
+ * 
+ * Description: Summarizes and manages the player characters skill attacks.
+ * 
+ *******************************************************************/
+using UnityEngine;
 using System.Collections;
 
 public class PlayerAttack : MonoBehaviour {
 
-	private bool canUseSkill = true;
+	private bool skillFlag = true;
 	private Animator anim;
-	private float bulletSpeed = 2000;
+	private float bulletSpeed = 2000;	//bullet speed for testing for bullet generation
 	public Rigidbody projectile;
 	private Rigidbody bullet;
 
@@ -21,28 +40,51 @@ public class PlayerAttack : MonoBehaviour {
 	}
 
 	private void skillSelection(){
-	//need to first figure out what the player stats are, and if they have unlocked the specific ability
-		/* canUseSkill = DetermineSkillUseAble(); // function from PlayerStatProfile that will look at :
-		 * cooldown, availability (is it unlocked?), resourses availble to cast?
-		 * playerStats();
-		 **/
-		//anim.SetBool ("Attack", canUseSkill); //set the blender tree Speed parameter to the meshs speed
-		if ((Input.GetKeyDown (KeyCode.Q) && canUseSkill)) {
+		//determine player skill information (skill availablitity, modifictions, animation, etc)
+
+		//Get the players current statistics, and apply them to skills base information
+
+		if ((Input.GetKeyDown (KeyCode.Q) && skillFlag)) {
 			print("Q has been pressed");
+
+			// deplete resource used to cast skill
+
+			//start cooldown counter?
+
+			// play character specific skill animation
+
+			//this is just for testing
 			bullet = (Rigidbody)Instantiate(projectile, this.transform.position, this.transform.rotation);
-			//bullet.transform.Translate(Vector3.forward * bulletSpeed);
-			//bullet.velocity = transform.TransformDirection(Vector3.forward * bulletSpeed);
 			bullet.AddForce(transform.forward * bulletSpeed);
+
 			//Destroy(bullet, 3);
 		}
-		if ((Input.GetKeyDown (KeyCode.W) && canUseSkill)) {
-			print("W has been pressed");		
+		if ((Input.GetKeyDown (KeyCode.W) && skillFlag)) {
+			print("W has been pressed");
+			
+			// deplete resource used to cast skill
+			
+			//start cooldown counter?
+			
+			// play character specific skill animation
 		}
-		if ((Input.GetKeyDown (KeyCode.E) && canUseSkill)) {
+		if ((Input.GetKeyDown (KeyCode.E) && skillFlag)) {
 			print("E has been pressed");		
+			
+			// deplete resource used to cast skill
+			
+			//start cooldown counter?
+			
+			// play character specific skill animation
 		}
-		if ((Input.GetKeyDown (KeyCode.R) && canUseSkill)) {
+		if ((Input.GetKeyDown (KeyCode.R) && skillFlag)) {
 			print("R has been pressed");		
+			
+			// deplete resource used to cast skill
+			
+			//start cooldown counter?
+			
+			// play character specific skill animation
 		}
 	}
 }
