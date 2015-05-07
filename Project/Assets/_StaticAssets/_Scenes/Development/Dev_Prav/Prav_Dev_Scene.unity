@@ -86,7 +86,7 @@ NavMeshSettings:
     minRegionArea: 2
     cellSize: .166666672
     manualCellSize: 0
-  m_NavMeshData: {fileID: 23800000, guid: 7c208c189b3fbbc42a9abcf41e819b86, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 268f78effdc8e654699bb74b42357b32, type: 2}
 --- !u!1 &114404324
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +340,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400576, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400576, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
       propertyPath: m_LocalRotation.z
@@ -348,7 +348,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400576, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -1.62920685e-07
       objectReference: {fileID: 0}
     - target: {fileID: 400576, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
       propertyPath: m_RootOrder
@@ -402,6 +402,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: -.707106948
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 5000e2b7975acfa4cbef89bd559b4385, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
   m_IsPrefabParent: 0
@@ -447,7 +451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555e200921cbca44282b143ef784a9f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAnimator: {fileID: 0}
+  playerAnimator: {fileID: 1455687169}
   playerRigidbody: {fileID: 1455687167}
   dragDelay: .400000006
   dragMovementFlag: 0
@@ -491,6 +495,11 @@ Rigidbody:
 --- !u!4 &1455687168
 Transform:
   m_PrefabParentObject: {fileID: 400576, guid: fb154b4ba93ba9348977d4ea31900b63, type: 3}
+  m_PrefabInternal: {fileID: 1455687161}
+--- !u!95 &1455687169
+Animator:
+  m_PrefabParentObject: {fileID: 9500000, guid: fb154b4ba93ba9348977d4ea31900b63,
+    type: 3}
   m_PrefabInternal: {fileID: 1455687161}
 --- !u!1 &1746569068
 GameObject:
@@ -589,7 +598,7 @@ GameObject:
   - 195: {fileID: 1752661260}
   m_Layer: 8
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
