@@ -76,6 +76,11 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// </summary>
         private Vector3 initialRotation;
 
+		/// <summary>
+		/// Reference to the Players Animator
+		/// </summary>
+		private Animator anim;
+
         /// <summary>
         /// Configure before first Frame load.
         /// </summary>
@@ -91,6 +96,8 @@ namespace Assets.Scripts.Actors.Player.Movement
             navMeshAgent.updateRotation = false; // Allows rotation offset incase of bad model import
             navMeshAgent.acceleration = float.MaxValue; // Set infinitly high acceleration
             navMeshAgent.angularSpeed = float.MaxValue; // Set infinitly high angular speed
+	
+			anim = GetComponent<Animator> (); 
 
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
@@ -178,6 +185,12 @@ namespace Assets.Scripts.Actors.Player.Movement
         {
             // Update animation state and velocity info?
             // http://docs.unity3d.com/Manual/nav-CouplingAnimationAndNavigation.html
+
+			//Get the velocity of the player mesh
+			float speed = navMeshAgent.velocity.magnitude;
+
+			anim.SetFloat ("Speed", speed); //set the blender tree Speed parameter to the meshs speed
+
         }
 
         void UpdateRotation()
