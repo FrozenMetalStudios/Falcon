@@ -26,9 +26,6 @@ namespace Assets.Scripts.Menu
         };
 
         //-------------------------------------------------------------------------------------------------------------------------
-        public GameObject AppPrefab;
-
-        //-------------------------------------------------------------------------------------------------------------------------
         private EMainMenuState StateId;
         private EMenuButtonId ButtonId;
         private float LogoDisplayTimer;
@@ -36,12 +33,6 @@ namespace Assets.Scripts.Menu
         //-------------------------------------------------------------------------------------------------------------------------
         void Start()
         {
-            // Is the controlling App already in existence?
-            if (GameObject.Find("Managers") == null)
-            {
-                Instantiate(AppPrefab);
-            }
-
             Logger.LogMessage(eLogCategory.Control,
                               eLogLevel.Trace, 
                               "MainMenu: Starting.");

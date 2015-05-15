@@ -76,10 +76,10 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// </summary>
         private Vector3 initialRotation;
 
-		/// <summary>
-		/// Reference to the Players Animator
-		/// </summary>
-		private Animator anim;
+        /// <summary>
+        /// 
+        /// </summary>
+        [ReadOnly] public Vector3 nonNavigableDestination;
 
         /// <summary>
         /// Configure before first Frame load.
@@ -96,8 +96,11 @@ namespace Assets.Scripts.Actors.Player.Movement
             navMeshAgent.updateRotation = false; // Allows rotation offset incase of bad model import
             navMeshAgent.acceleration = float.MaxValue; // Set infinitly high acceleration
             navMeshAgent.angularSpeed = float.MaxValue; // Set infinitly high angular speed
-	
-			anim = GetComponent<Animator> (); 
+            navMeshAgent.stoppingDistance = 0.0f; // Ensures the player is as close to the location as possible
+            navMeshAgent.autoBraking = true; // Forces Autobraking, which ensures no overshoot
+
+            // Initialize Animation Components
+            playerAnimator = GetComponent<Animator>(); 
 
             // Create a layer mask for the floor layer.
             floorMask = LayerMask.GetMask("Floor");
@@ -117,7 +120,7 @@ namespace Assets.Scripts.Actors.Player.Movement
             // TODO: Something to affect movement speed?
 
             // Determine where we will be next and how fast
-            DetermineAnimationParameters();
+            // DetermineAnimationParameters();
 
             // Update the Rotation
             UpdateRotation();
@@ -141,21 +144,29 @@ namespace Assets.Scripts.Actors.Player.Movement
                 // Create a RaycastHit variable to store information about what was hit by the ray.
                 RaycastHit floorHit;
 
-                GameObject objectHit;
-
                 // Update the drag timer and store the state
                 dragMovementFlag = dragTimer.UpdateAndCheck();
-
 
                 // Perform the raycast and if it hits something on the floor layer...
                 if (Physics.Raycast(camRay, out floorHit, camRayLength, floorMask))
                 {
+                    GameObject objectHit;
                     objectHit = floorHit.collider.gameObject;
-                    print(objectHit.tag);
+
                     // Check to see if the point is within the minimum point distance
-                    if (!CircularPlaneDetector.InGeometry(transform.position, floorHit.point, minimumMovementRadius, VectSupp.Axis.Y) && ("Floor" == objectHit.gameObject.tag))
+                    if (!CircularPlaneDetector.InGeometry(transform.position, floorHit.point, minimumMovementRadius, VectSupp.Axis.Y)
+                     && ("Floor" == objectHit.gameObject.tag))
                     {
-                        navMeshAgent.destination = floorHit.point;
+                        navMeshAgent.SetDestination(floorHit.point);
+
+                        if ("Floor" == objectHit.gameObject.tag)
+                        {
+                            nonNavigableDestination = Vector3.zero;
+                        }
+                        else
+                        {
+                            nonNavigableDestination = floorHit.point;
+                        }
                     }
                     else
                     {
@@ -186,18 +197,25 @@ namespace Assets.Scripts.Actors.Player.Movement
             // Update animation state and velocity info?
             // http://docs.unity3d.com/Manual/nav-CouplingAnimationAndNavigation.html
 
-			//Get the velocity of the player mesh
-			float speed = navMeshAgent.velocity.magnitude;
+            //Get the velocity of the player mesh
+            float speed = navMeshAgent.velocity.magnitude;
 
-			anim.SetFloat ("Speed", speed); //set the blender tree Speed parameter to the meshs speed
+            playerAnimator.SetFloat("Speed", speed); //Set the blender tree Speed parameter to the meshs speed
 
         }
 
         void UpdateRotation()
         {
-            if (navMeshAgent.remainingDistance != 0.0)
+            if (0.0 != navMeshAgent.remainingDistance)
             {
                 UpdateRotation(navMeshAgent.steeringTarget);
+            }
+            else
+            {
+                if (Vector3.zero != nonNavigableDestination)
+                {
+                    UpdateRotation(nonNavigableDestination);
+                }
             }
         }
 
@@ -216,6 +234,13 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// </summary>
         void UpdatePosition()
         {
+            Logger.LogMessage(eLogCategory.Navigation,
+                              eLogLevel.Trace,
+                              string.Format("Destination  : {0}", navMeshAgent.destination));
+            Logger.LogMessage(eLogCategory.Navigation,
+                              eLogLevel.Trace,
+                              string.Format("Next Position: {0}", navMeshAgent.nextPosition));
+
             // Update the Position of the Character
             transform.position = navMeshAgent.nextPosition;
         }
