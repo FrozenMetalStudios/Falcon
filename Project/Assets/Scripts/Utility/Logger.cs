@@ -1,6 +1,4 @@
-﻿//#define STANDALONE_MONOBEHAVIOUR
-
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,12 +25,7 @@ namespace Assets.Scripts.Utility
         Trace
     };
 
-#if STANDALONE_MONOBEHAVIOUR
     public class Logger : MonoBehaviour
-#else
-    [Serializable]
-    public class Logger
-#endif
     {
         private class CategoryConfig
         {
@@ -81,6 +74,9 @@ namespace Assets.Scripts.Utility
                 return;
             }
             _Singleton = this;
+
+            // Make sure this object persists between scene loads.
+            DontDestroyOnLoad(gameObject);
 
             // Initialize the General Log file
             logWriters.Add(generalLog, new StreamWriter(generalLog, false, System.Text.Encoding.UTF8));
@@ -200,16 +196,16 @@ namespace Assets.Scripts.Utility
             logWriters.Clear();
         }
 
-#if STANDALONE_MONOBEHAVIOUR
         public void Awake()
         {
+            UnityEngine.Debug.Log("Logger: Initializing");
             Initialize();
         }
 
-        public void OnDestroy()
+        public void OnApplicationQuit()
         {
+            UnityEngine.Debug.Log("Logger: Cleanup");
             Cleanup();
         }
-#endif
     }
 }

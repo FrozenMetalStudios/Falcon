@@ -42,9 +42,6 @@ namespace Assets.Scripts
         private int _FPSFrames;
 #endif
 
-        //---------------------------------------------------------------------
-        public Logger logger = new Logger();
-
         // --------------------------------------------------------------------
         static SceneManager _Singleton = null;
 
@@ -60,12 +57,15 @@ namespace Assets.Scripts
             // Ensure only 1 singleton
             if (null != _Singleton)
             {
-                UnityEngine.Debug.LogError("SceneManager: Multiple SceneManagers violate Singleton pattern.");
+                Logger.LogMessage(eLogCategory.General,
+                                  eLogLevel.Assert,
+                                  "SceneManager: Multiple SceneManagers violate Singleton pattern.");
+                return;
             }
             _Singleton = this;
 
-            // Initialize the Logger
-            logger.Initialize();
+            // Make sure this object persists between scene loads.
+            DontDestroyOnLoad(gameObject);
 
             // Trace Startup
             Logger.LogMessage(eLogCategory.Control,
@@ -78,17 +78,11 @@ namespace Assets.Scripts
             // Are we in the Application Scene?
             if (Application.loadedLevelName == "Entry")
             {
-                // Make sure this object persists between scene loads.
-                DontDestroyOnLoad(gameObject);
-
-#if !FINAL
                 // Load the Debug Scene Selector
                 Logger.LogMessage(eLogCategory.Control,
                                   eLogLevel.Trace,
                                   "SceneManager: Loading SceneSelector");
-                _CurrentScene = "SceneSelector";
-                Application.LoadLevel(_CurrentScene);
-#endif
+                Application.LoadLevel("SceneSelector");
             }
         }
 
@@ -197,8 +191,6 @@ namespace Assets.Scripts
 
         public void OnDestroy()
         {
-            // Cleanup the logger
-            logger.Cleanup();
         }
     }
 }

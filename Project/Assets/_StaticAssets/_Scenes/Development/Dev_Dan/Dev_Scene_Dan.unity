@@ -97,7 +97,7 @@ GameObject:
   - 4: {fileID: 344105598}
   - 114: {fileID: 344105597}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Debug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28dad38fec2662047a365eaf678207fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ManagerPrefab: {fileID: 161270, guid: d9cecda44effbca40a115c2cbaa9b7e0, type: 2}
+  LoggerPrefab: {fileID: 107242, guid: 0f9b3572aec31aa48bf3d9406c2e024f, type: 2}
+  SceneManagerPrefab: {fileID: 194522, guid: 644b3898270600f45a22106005f6308b, type: 2}
 --- !u!4 &344105598
 Transform:
   m_ObjectHideFlags: 0
@@ -140,7 +141,7 @@ GameObject:
   - 23: {fileID: 453701235}
   - 114: {fileID: 453701234}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: CameraChange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,7 +257,7 @@ GameObject:
   - 64: {fileID: 618642800}
   - 23: {fileID: 618642799}
   m_Layer: 8
-  m_Name: Plane
+  m_Name: BottomFloor
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -334,7 +335,7 @@ GameObject:
   - 114: {fileID: 781517103}
   - 114: {fileID: 781517097}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -751,7 +752,7 @@ GameObject:
   - 64: {fileID: 1308718302}
   - 23: {fileID: 1308718301}
   m_Layer: 8
-  m_Name: Plane 1
+  m_Name: RightRamp
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
@@ -824,7 +825,7 @@ GameObject:
   - 64: {fileID: 1425955645}
   - 23: {fileID: 1425955644}
   m_Layer: 8
-  m_Name: Plane
+  m_Name: TopFloor
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -980,7 +981,7 @@ GameObject:
   - 64: {fileID: 1814409467}
   - 23: {fileID: 1814409466}
   m_Layer: 8
-  m_Name: Plane
+  m_Name: LeftRamp
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

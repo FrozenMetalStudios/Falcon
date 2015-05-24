@@ -28,7 +28,8 @@ namespace Assets.Scripts.Menu
         //-------------------------------------------------------------------------------------------------------------------------
         private EMainMenuState StateId;
         private EMenuButtonId ButtonId;
-        private float LogoDisplayTimer;
+        public float LogoDisplayTimer = 4.0f;
+        private float _LogoDisplayTimer;
 
         //-------------------------------------------------------------------------------------------------------------------------
         void Start()
@@ -61,14 +62,14 @@ namespace Assets.Scripts.Menu
                     {
                         SceneManager.Singleton.DisplayedLogo = true;
                         StateId = EMainMenuState.DisplayLogo;
-                        LogoDisplayTimer = 1.0f;
+                        _LogoDisplayTimer = LogoDisplayTimer;
                     }
                     break;
 
                 case EMainMenuState.DisplayLogo:
-                    LogoDisplayTimer -= Time.deltaTime;
+                    _LogoDisplayTimer -= Time.deltaTime;
 
-                    if (LogoDisplayTimer < 0.0f)
+                    if (_LogoDisplayTimer < 0.0f)
                         StateId = EMainMenuState.Menu;
                     break;
 

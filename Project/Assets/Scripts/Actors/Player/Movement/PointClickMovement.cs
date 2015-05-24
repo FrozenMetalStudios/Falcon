@@ -49,7 +49,7 @@ namespace Assets.Scripts.Actors.Player.Movement
         /// <summary>
         /// The delay before a Drag move is enabled.
         /// </summary>
-        public float dragDelay = 0.4f;
+        public float dragDelay = 0.5f;
 
         /// <summary>
         /// Ensures that a drag move only begins after a delay.
