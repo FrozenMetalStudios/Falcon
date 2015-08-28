@@ -3,35 +3,50 @@ using System.Collections;
 
 public class _CharacterPanelManager : MonoBehaviour {
 
+    //enum for collaspe and expanded state of the character window
     private enum enPanelState
     {
         collapsed,
         expanded
     };
 
-    private enPanelState characterPanelState;
+    //current state of the character panel
+    private enPanelState currentPanelState;
+    //game object of collapsed panel
+    private GameObject collapsedPanel;
+    //game object of the expanded panel
+    private GameObject expandedPanel;
 
 	// Use this for initialization
 	void Start () {
-        characterPanelState = enPanelState.collapsed;
-	}
+        currentPanelState = enPanelState.collapsed;
+
+        //get the game objects of the collapsed and expanded panels
+        collapsedPanel = GameObject.FindGameObjectWithTag("collapsed");
+        expandedPanel =  GameObject.FindGameObjectWithTag("expanded");
+        collapsedPanel.SetActive(true);
+        expandedPanel.SetActive(false);
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
 
+    //toggles the panel state depending on the current state of the panel
     public void changePanelState(){
 
-        if(characterPanelState == enPanelState.collapsed)
+        if(currentPanelState == enPanelState.collapsed)
         {
-            print("collapsed -> expanded");
-            characterPanelState = enPanelState.expanded;
+            currentPanelState = enPanelState.expanded;
+            collapsedPanel.SetActive(false);
+            expandedPanel.SetActive(true);
         }
-        else if (characterPanelState == enPanelState.expanded)
+        else if (currentPanelState == enPanelState.expanded)
         {
-            print("expanded -> collapsed");
-            characterPanelState = enPanelState.collapsed;
+            currentPanelState = enPanelState.collapsed;
+            expandedPanel.SetActive(false);
+            collapsedPanel.SetActive(true);
         }
     }
 }
