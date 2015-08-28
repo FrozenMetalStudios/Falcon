@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\CustomEditor\BuildMenu.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\BuildTools.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\ReadonlyAttribute.cs" />
+    <Compile Include="Assets\Scripts\HUD\_CharacterPanelManager.cs" />
     <Compile Include="Assets\Scripts\HUD\_TabManager.cs" />
     <Compile Include="Assets\Scripts\Menu\SceneSelector.cs" />
     <Compile Include="Assets\Scripts\Perspective\Cameras\AbstractCamera.cs" />
