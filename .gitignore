@@ -27,6 +27,8 @@ obj/
 *.user
 *.unityproj
 *.booproj
+*.sln
+*.csproj
 
 
 #----------------------

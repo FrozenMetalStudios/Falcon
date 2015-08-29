@@ -27,8 +27,8 @@ md Platforms
 @echo Build Platforms
 @echo -------------------------------------------
 @echo Win32 Debug
-unity -nographics -batchmode -quit -logFile .\Logs\Build_Win32_Debug.log -ProjectPath %~dp0..\Project -executeMethod BuildTools.BuildWin32 -buildConfig Debug
+unity -nographics -batchmode -quit -logFile .\Logs\Build_Win32_Debug.log -ProjectPath %~dp0..\Project_Strategy -executeMethod BuildTools.BuildWin32 -buildConfig Debug
 @echo Win32 Release
-unity -nographics -batchmode -quit -logFile .\Logs\Build_Win32_Release.log -ProjectPath %~dp0..\Project -executeMethod BuildTools.BuildWin32 -buildConfig Release
+unity -nographics -batchmode -quit -logFile .\Logs\Build_Win32_Release.log -ProjectPath %~dp0..\Project_Strategy -executeMethod BuildTools.BuildWin32 -buildConfig Release
 @echo Builds Finished.
 pause
