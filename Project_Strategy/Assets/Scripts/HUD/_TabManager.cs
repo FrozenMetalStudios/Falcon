@@ -69,9 +69,9 @@ public class ManagementPanel
 
 }
 
-public class smallManagementPanel : ManagementPanel
+public class SmallManagementPanel : ManagementPanel
 {
-    public smallManagementPanel()
+    public SmallManagementPanel()
     {
         base.ArmyTab = GameObject.FindGameObjectWithTag("Army_small");
         base.CaptainsTab = GameObject.FindGameObjectWithTag("Captains_small");
@@ -82,11 +82,11 @@ public class smallManagementPanel : ManagementPanel
     }
 }
 
-public class largeManagementPanel : ManagementPanel
+public class LargeManagementPanel : ManagementPanel
 {
     private GameObject maximizedPanel;
 
-    public largeManagementPanel()
+    public LargeManagementPanel()
     {
         maximizedPanel = GameObject.FindGameObjectWithTag("maximizedManagementPanel");
         base.ArmyTab = GameObject.FindGameObjectWithTag("Army_large");
@@ -112,6 +112,8 @@ public class largeManagementPanel : ManagementPanel
 }
 
 public class _TabManager : MonoBehaviour {
+
+    private static double clockTic = 0.2;
     private enum enMouseClick
     {
         SingleClick,
@@ -121,13 +123,13 @@ public class _TabManager : MonoBehaviour {
 
     private GameObject maximizedPanel;
     private float lastClick = 0;
-    private smallManagementPanel smallMP;
-    private largeManagementPanel largeMP;
+    private SmallManagementPanel smallMP;
+    private LargeManagementPanel largeMP;
 
     void Start()
     {
-        smallMP = new smallManagementPanel();
-        largeMP = new largeManagementPanel();
+        smallMP = new SmallManagementPanel();
+        largeMP = new LargeManagementPanel();
         smallMP.contentHide();
         smallMP.ArmyTab.SetActive(true);
         largeMP.contentHide();
@@ -227,7 +229,7 @@ public class _TabManager : MonoBehaviour {
     private enMouseClick tabClick(){
 
         enMouseClick mouseClick;
-        if (Time.time - lastClick < 0.2)
+        if (Time.time - lastClick < clockTic)
         {
             mouseClick =  enMouseClick.DoubleClick;
         }
