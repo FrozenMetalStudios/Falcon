@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
 using MacroViewUI;
+using System.Xml.Linq;
 
+//manages the macro view user interface
 public class _HUDManager : MonoBehaviour {
 
     private static double CLOCK_TIC = 0.2;
+    private GameObject maximizedPanel;
+    private float lastClick = 0;
+    private SmallManagementPanel smallMP;
+    private LargeManagementPanel largeMP;
+    private CharacterPanel characterPanel;
+
+    private static string XML_FILE_PATH = "managementpanel.xml";
+    private XDocument xmlDoc;
+
     private enum enMouseClick
     {
         SingleClick,
         DoubleClick,
         None
     }
-
-    private GameObject maximizedPanel;
-    private float lastClick = 0;
-    private SmallManagementPanel smallMP;
-    private LargeManagementPanel largeMP;
-    private CharacterPanel characterPanel;
 
     private enMouseClick tabClick()
     {
@@ -36,12 +41,18 @@ public class _HUDManager : MonoBehaviour {
 
     void Start()
     {
+
+        //load xml file
+        //xmlDoc = XDocument.Load(XML_FILE_PATH);
+
+        //populate the necessary fields for all panels
+
         smallMP = new SmallManagementPanel();
         largeMP = new LargeManagementPanel();
         characterPanel = new CharacterPanel();
 
         smallMP.contentHide();
-        smallMP.ArmyTab.SetActive(true);
+        smallMP.ArmyTab.TabObj.SetActive(true);
         largeMP.contentHide();
         largeMP.MaximizedPanel.SetActive(false);
         characterPanel.CollapsedPanel.SetActive(true);
@@ -62,7 +73,7 @@ public class _HUDManager : MonoBehaviour {
                 else
                 {
                     largeMP.MaximizedPanel.SetActive(true);
-                    largeMP.ArmyTab.SetActive(true);
+                    largeMP.ArmyTab.TabObj.SetActive(true);
                 }
             }
         }
