@@ -1,0 +1,1 @@
+This game is developed and owned by FrozenMetalStudios.
